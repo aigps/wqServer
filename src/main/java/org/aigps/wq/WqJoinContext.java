@@ -1,5 +1,6 @@
 package org.aigps.wq;
 
+import org.aigps.wq.join.JoinServer;
 import org.aigps.wq.join.WqJoinHttpService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -8,18 +9,18 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * @Title£º<Àà±êÌâ>
- * @Description£º<ÀàÃèÊö>
+ * @Titleï¿½ï¿½<ï¿½ï¿½ï¿½ï¿½ï¿½>
+ * @Descriptionï¿½ï¿½<ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>
  *
  * @author ccq
  * @version 1.0
  *
- * Create Date£º  2012-3-2ÉÏÎç10:58:38
- * Modified By£º  <ÐÞ¸ÄÈËÖÐÎÄÃû»òÆ´ÒôËõÐ´>
- * Modified Date£º<ÐÞ¸ÄÈÕÆÚ£¬¸ñÊ½:YYYY-MM-DD>
+ * Create Dateï¿½ï¿½  2012-3-2ï¿½ï¿½ï¿½ï¿½10:58:38
+ * Modified Byï¿½ï¿½  <ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½ï¿½Ð´>
+ * Modified Dateï¿½ï¿½<ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ê½:YYYY-MM-DD>
  *
- * Copyright£ºCopyright(C),1995-2011 ÕãIPC±¸09004804ºÅ
- * Company£ºº¼ÖÝÔªÂë¿Æ¼¼ÓÐÏÞ¹«Ë¾
+ * Copyrightï¿½ï¿½Copyright(C),1995-2011 ï¿½ï¿½IPCï¿½ï¿½09004804ï¿½ï¿½
+ * Companyï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾
  */
 public class WqJoinContext {
 	private static final Log log = LogFactory.getLog(WqJoinContext.class);
@@ -35,6 +36,8 @@ public class WqJoinContext {
 	
 	public static void main(String[] args) {
 		try {
+			JoinServer.startup();
+			
 			context = new ClassPathXmlApplicationContext(new String[]{"wqJoinContext.xml"});
 			WqConfig wqConfig = getBean("wqConfig", WqConfig.class);
 			HttpServer httpServer = new HttpServer(wqConfig.getHttpIp(), wqConfig.getHttpPort(), getBean("wqJoinHttpService", WqJoinHttpService.class));

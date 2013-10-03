@@ -7,11 +7,9 @@ import org.aigps.wq.join.startup.JobServer;
 import org.aigps.wq.join.startup.SpringContext;
 import org.gps.map.offset.OffSetCache2;
 
+public class JoinServer {
 
-
-public class JoinMain {
-
-	public static void main(String[] args) throws Exception{
+	public static void startup() throws Exception{
 		try {
 			// 加载spring上下文
 			SpringContext.startup();
