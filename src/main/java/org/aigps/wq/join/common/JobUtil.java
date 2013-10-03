@@ -2,8 +2,6 @@ package org.aigps.wq.join.common;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.quartz.Job;
-import org.quartz.Scheduler;
 
 public class JobUtil {
 private static final Log log = LogFactory.getLog(JobUtil.class);

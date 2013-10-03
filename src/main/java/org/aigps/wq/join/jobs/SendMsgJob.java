@@ -1,5 +1,6 @@
 package org.aigps.wq.join.jobs;
 
+import java.util.Collection;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -15,7 +16,12 @@ public class SendMsgJob implements Runnable{
 	private ThreadPoolExecutor pool = new ThreadPoolExecutor(2, 5, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(500000));
 	
 	public void run() {
-		for(final Device device : ChannelUtil.getClientDeviceMap().values()){
+		sendMsg(ChannelUtil.getClientDeviceMap().values());
+		sendMsg(ChannelUtil.getServerDeviceMap().values());
+	}
+	
+	private void sendMsg(Collection<Device> devices) {
+		for(final Device device : devices){
 			try {
 				if(device != null && !device.isSendingMsg() && !device.msgIsEmpty()){
 					pool.execute(new Runnable() {
