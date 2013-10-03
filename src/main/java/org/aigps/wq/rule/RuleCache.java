@@ -33,13 +33,13 @@ public class RuleCache implements ApplicationContextAware{
 	 * 区域集合
 	 */
 	private static Map<String, WqMapRegion> regionMap = new ConcurrentLinkedHashMap.Builder<String, WqMapRegion>().build();
-	public  Map<String, WqMapRegion> getRegionMap()throws Exception {
+	public static Map<String, WqMapRegion> getRegionMap()throws Exception {
 		if(regionMap.size() == 0){
 			regionMap = loadRegionMap();
 		}
 		return regionMap;
 	}
-	public Map<String,WqMapRegion> loadRegionMap()throws Exception{
+	public static Map<String,WqMapRegion> loadRegionMap()throws Exception{
 		Map<String, WqMapRegion> tempMap = new ConcurrentLinkedHashMap.Builder<String, WqMapRegion>().build();
 		RuleDao ruleDao = context.getBean("ruleDao", RuleDao.class); 
 		tempMap.putAll(ruleDao.getWqMapRegion());
@@ -213,21 +213,17 @@ public class RuleCache implements ApplicationContextAware{
 	 * 移除跨天的访问，将一次访问分成两次
 	 * @throws Exception
 	 */
-	public static void removeOverDayVisit(GisPosition oldGpsModel,GisPosition newGpsModel)throws Exception{
-		RuleCache.refreshLastGps(newGpsModel);
-		//如果日期变动了，并且前一个日期小于当前日期
-		String staffId = oldGpsModel.getTmnAlias();
-		if(oldGpsModel.getRptTime().substring(0, 8).compareTo(newGpsModel.getRptTime().substring(0, 8))<0){
-			if(staffVisitRegionMap.containsKey(staffId)){
-				HashMap<String, WqRegionVisit> regionVisitMap = staffVisitRegionMap.get(staffId);
-				Iterator<String> regionIdIt = regionVisitMap.keySet().iterator();
-				while(regionIdIt.hasNext()){
-					String regionId = regionIdIt.next();
-					WqRegionVisit wqRegionVisit = regionVisitMap.get(regionId);
-					wqRegionVisit.setLeaveTime(oldGpsModel.getRptTime());
-					wqRegionVisit.setStayLong(BigDecimal.valueOf(DateUtil.getBetweenTime(wqRegionVisit.getEnterTime(), wqRegionVisit.getLeaveTime(),DateUtil.YMDHMS)/1000));
-					RuleCache.addNewOutRegion(wqRegionVisit);
-				}
+	public static void removeOverDayVisit(GisPosition preGps)throws Exception{
+		String staffId = preGps.getTmnAlias();
+		HashMap<String, WqRegionVisit> regionVisitMap = staffVisitRegionMap.get(staffId);
+		if(regionVisitMap != null){
+			Iterator<String> regionIdIt = regionVisitMap.keySet().iterator();
+			while(regionIdIt.hasNext()){
+				String regionId = regionIdIt.next();
+				WqRegionVisit wqRegionVisit = regionVisitMap.get(regionId);
+				wqRegionVisit.setLeaveTime(preGps.getRptTime());
+				wqRegionVisit.setStayLong(BigDecimal.valueOf(DateUtil.getBetweenTime(wqRegionVisit.getEnterTime(), wqRegionVisit.getLeaveTime(),DateUtil.YMDHMS)/1000));
+				RuleCache.addNewOutRegion(wqRegionVisit);
 			}
 		}
 	}

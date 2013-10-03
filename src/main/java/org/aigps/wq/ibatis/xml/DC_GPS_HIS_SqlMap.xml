@@ -17,6 +17,8 @@
     <result column="LOC_DESC" property="locDesc" jdbcType="VARCHAR" />
     <result column="ZCODE" property="zCode" jdbcType="VARCHAR" />
     <result column="PRECISION" property="precision" jdbcType="VARCHAR"/>
+    <result column="LOGIT_OFFSET" property="lonOff" jdbcType="DECIMAL" />
+    <result column="LAT_OFFSET" property="latOff" jdbcType="DECIMAL" /> 
   </resultMap>
   <select id="selectByPrimaryKey" resultMap="ibatorgenerated_BaseResultMap" parameterClass="org.aigps.wq.entity.GisPosition" >
     select * from DC_GPS_HIS
@@ -41,12 +43,12 @@
   <insert id="insert" parameterClass="org.aigps.wq.entity.GisPosition" >
     insert into DC_GPS_HIS (TMN_CODE, TMN_ALIAS, REPORT_TIME, LOGIT, LAT,
       SPEED, ANGLE, HEIGHT,GSM_SIGN, GPS_SATL,
-      LOC_DESC, ZCODE, GPS_TYPE, ALARM_TYPE,PRECISION)
+      LOC_DESC, ZCODE, GPS_TYPE, ALARM_TYPE,PRECISION, LOGIT_OFFSET, LAT_OFFSET)
     values (#tmnKey:VARCHAR#, #tmnAlias:VARCHAR#, #rptTime:DECIMAL#, #lon:DECIMAL#,
       #lat:DECIMAL#, #speed:VARCHAR#, #dire:VARCHAR#,
       #altitude:VARCHAR#,  #gsmSign:VARCHAR#, #satlSign:VARCHAR#,
        #locDesc:VARCHAR#, #zCode:VARCHAR#,
-      #gpsType:VARCHAR#, #trigType:VARCHAR#,#precision:VARCHAR#)
+      #gpsType:VARCHAR#, #trigType:VARCHAR#,#precision:VARCHAR#, #lonOff:DECIMAL#,#latOff:DECIMAL#)
   </insert>
   <update id="updateGpsLoc" parameterClass="org.aigps.wq.entity.GisPosition">
   	update DC_GPS_HIS set LOC_DESC = #locDesc:VARCHAR#

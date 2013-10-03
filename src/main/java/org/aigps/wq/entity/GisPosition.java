@@ -1,6 +1,9 @@
 package org.aigps.wq.entity;
 
 import java.io.Serializable;
+
+import org.apache.commons.lang3.StringUtils;
+import org.gps.util.common.DateUtil;
 public class GisPosition implements Serializable{
 	/**
 	 * 
@@ -42,9 +45,26 @@ public class GisPosition implements Serializable{
 	private String queryStartTime;
 	//查询结束时间yyyyMMddHHmmss
 	private String queryEndTime;
+	//偏移经度
+	private double lonOff;
+	//偏移纬度
+	private double latOff;
+	//定位时间yyyy-MM-dd HH:mm:ss
+	private transient String rptStrTime;
 	
 	
 	
+	
+	
+	public String getRptStrTime()throws Exception {
+		if(StringUtils.isBlank(rptStrTime)){
+			rptStrTime = DateUtil.converDateFormat(rptTime, DateUtil.YMDHMS, DateUtil.YMD_HMS);
+		}
+		return rptStrTime;
+	}
+	public void setRptStrTime(String rptStrTime) {
+		this.rptStrTime = rptStrTime;
+	}
 	//基站ID  暂时不支持
 //	private String cellId;
 	public String getzCode() {
@@ -156,6 +176,18 @@ public class GisPosition implements Serializable{
 	}
 	public void setQueryEndTime(String queryEndTime) {
 		this.queryEndTime = queryEndTime;
+	}
+	public double getLonOff() {
+		return lonOff;
+	}
+	public void setLonOff(double lonOff) {
+		this.lonOff = lonOff;
+	}
+	public double getLatOff() {
+		return latOff;
+	}
+	public void setLatOff(double latOff) {
+		this.latOff = latOff;
 	}
 
 //	public String getCellId() {
