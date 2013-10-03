@@ -10,59 +10,59 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * 
-* @Title£ºÔ¶³Ì»á»°ÖÕ¶Ë»º´æ
-* @Description£º<ÀàÃèÊö>
+* @Titleï¿½ï¿½Ô¶ï¿½Ì»á»°ï¿½Õ¶Ë»ï¿½ï¿½ï¿½
+* @Descriptionï¿½ï¿½<ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>
 *
 * @author ccq
 * @version 1.0
 *
-* Create Date£º  2012-10-23ÉÏÎç10:00:52
-* Modified By£º  <ÐÞ¸ÄÈËÖÐÎÄÃû»òÆ´ÒôËõÐ´>
-* Modified Date£º<ÐÞ¸ÄÈÕÆÚ£¬¸ñÊ½:YYYY-MM-DD>
+* Create Dateï¿½ï¿½  2012-10-23ï¿½ï¿½ï¿½ï¿½10:00:52
+* Modified Byï¿½ï¿½  <ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½ï¿½Ð´>
+* Modified Dateï¿½ï¿½<ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ê½:YYYY-MM-DD>
 *
-* Copyright£ºCopyright(C),1995-2012 ÕãIPC±¸09004804ºÅ
-* Company£ºº¼ÖÝÖÐµ¼¿Æ¼¼ÓÐÏÞ¹«Ë¾
+* Copyrightï¿½ï¿½Copyright(C),1995-2012 ï¿½ï¿½IPCï¿½ï¿½09004804ï¿½ï¿½
+* Companyï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾
  */
 public class ChannelUtil {
 	public final static Log log = LogFactory.getLog(ChannelUtil.class);
 
-	// <ÖÕ¶ËºÅ,Device>
-	private static Map<String, Device> deviceMap = new ConcurrentHashMap<String, Device>();
+	// <ï¿½Õ¶Ëºï¿½,Device>
+	private static Map<String, ClientDevice> deviceMap = new ConcurrentHashMap<String, ClientDevice>();
 	
 	/**
-	 * ÉèÖÃ¸üÐÂÔ¶³ÌÖÕ¶Ë»á»°£¬Èç¹û»º´æÖÐÃ»ÓÐÔò´´½¨ÖÕ¶Ë»á»°
+	 * ï¿½ï¿½ï¿½Ã¸ï¿½ï¿½ï¿½Ô¶ï¿½ï¿½ï¿½Õ¶Ë»á»°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ò´´½ï¿½ï¿½Õ¶Ë»á»°
 	 * @param deviceId
 	 * @param tcpChannel
 	 * @throws Exception
 	 */
 	public static void setChannel(String deviceId,Channel channel)throws Exception{
-		Device device = deviceMap.get(deviceId);
+		ClientDevice device = deviceMap.get(deviceId);
 		if (device != null) {
 			device.setChannel(channel);
 			device.setLastTime(System.currentTimeMillis());
 		} else {
-			deviceMap.put(deviceId, new Device(deviceId, channel));
+			deviceMap.put(deviceId, new ClientDevice(deviceId, channel));
 		}
 	}
 
 	/**
-	 * ·¢ËÍÊý¾Ý
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 	 */
 	public static void sendMsg(String deviceId, String msg) throws Exception{
-		Device device = deviceMap.get(deviceId);
+		ClientDevice device = deviceMap.get(deviceId);
 		if(device != null){
 			device.addMsg(msg);
 		}
 	}
 	
 	/**
-	 * ¸ù¾ÝÁ¬½ÓÍ¨µÀ£¬·µ»ØÖÕ¶ËºÅ
+	 * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Õ¶Ëºï¿½
 	 * @param tcpChannel
 	 * @return
 	 * @throws Exception
 	 */
 	public static String getDeviceId(Channel channel)throws Exception{
-		for(Device device : deviceMap.values()){
+		for(ClientDevice device : deviceMap.values()){
 			if(channel == device.getChannel()){
 				return device.getDeviceId();
 			}
@@ -71,7 +71,7 @@ public class ChannelUtil {
 	}
 	
 	public static void removeDevice(Channel channel)throws Exception{
-		for(Device device : deviceMap.values()){
+		for(ClientDevice device : deviceMap.values()){
 			if(channel == device.getChannel()){
 				deviceMap.remove(device.getDeviceId());
 			}
@@ -79,10 +79,10 @@ public class ChannelUtil {
 	}
 	
 	/**
-	 * »ñÈ¡ËùÓÐÖÕ¶Ë»á»°»º´æ
+	 * ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Õ¶Ë»á»°ï¿½ï¿½ï¿½ï¿½
 	 * @return
 	 */
-	public static Map<String, Device> getDeviceMap(){
+	public static Map<String, ClientDevice> getDeviceMap(){
 		return deviceMap;
 	}
 	

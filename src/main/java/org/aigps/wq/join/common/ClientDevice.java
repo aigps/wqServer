@@ -10,21 +10,21 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 /**
- * @Title£ºÔ¶³Ì»á»°ÖÕ¶Ë
- * @Description£º<ÀàÃèÊö>
+ * @Titleï¿½ï¿½Ô¶ï¿½Ì»á»°ï¿½Õ¶ï¿½
+ * @Descriptionï¿½ï¿½<ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>
  *
  * @author ccq
  * @version 1.0
  *
- * Create Date£º  2012-10-23ÉÏÎç09:02:59
- * Modified By£º  <ÐÞ¸ÄÈËÖÐÎÄÃû»òÆ´ÒôËõÐ´>
- * Modified Date£º<ÐÞ¸ÄÈÕÆÚ£¬¸ñÊ½:YYYY-MM-DD>
+ * Create Dateï¿½ï¿½  2012-10-23ï¿½ï¿½ï¿½ï¿½09:02:59
+ * Modified Byï¿½ï¿½  <ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½ï¿½Ð´>
+ * Modified Dateï¿½ï¿½<ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ê½:YYYY-MM-DD>
  *
- * Copyright£ºCopyright(C),1995-2011 ÕãIPC±¸09004804ºÅ
- * Company£ºº¼ÖÝÖÐµ¼¿Æ¼¼ÓÐÏÞ¹«Ë¾
+ * Copyrightï¿½ï¿½Copyright(C),1995-2011 ï¿½ï¿½IPCï¿½ï¿½09004804ï¿½ï¿½
+ * Companyï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðµï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾
  */
-public class Device {
-	private static final Log log = LogFactory.getLog(Device.class);
+public class ClientDevice {
+	private static final Log log = LogFactory.getLog(ClientDevice.class);
 	
 	private String deviceId;
 	private Channel channel;
@@ -32,7 +32,7 @@ public class Device {
 	private AtomicBoolean isSending = new AtomicBoolean(false);
 	private Queue<String> msgs = new ConcurrentLinkedQueue<String>();
 	
-	public Device(String deviceId,Channel channel) {
+	public ClientDevice(String deviceId,Channel channel) {
 		this.deviceId = deviceId;
 		this.channel = channel;
 		this.lastTime = System.currentTimeMillis();
@@ -43,7 +43,7 @@ public class Device {
 	}
 	
 	/**
-	 * ·¢ËÍ¸øÔ¶³ÌÖÕ¶Ë
+	 * ï¿½ï¿½ï¿½Í¸ï¿½Ô¶ï¿½ï¿½ï¿½Õ¶ï¿½
 	 * @throws Exception
 	 */
 	public void sendMsg(){

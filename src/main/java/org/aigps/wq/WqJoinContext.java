@@ -40,7 +40,6 @@ public class WqJoinContext {
 			
 			context = new ClassPathXmlApplicationContext(new String[]{"wqJoinContext.xml"});
 			WqConfig wqConfig = getBean("wqConfig", WqConfig.class);
-			HttpServer httpServer = new HttpServer(wqConfig.getHttpIp(), wqConfig.getHttpPort(), getBean("wqJoinHttpService", WqJoinHttpService.class));
 			log.error("  start wq join  success!");
 			while(true){
 				Thread.sleep(30*1000);

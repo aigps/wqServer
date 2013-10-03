@@ -2,7 +2,7 @@ package org.aigps.wq.join.jobs;
 
 import org.aigps.wq.join.common.Cfg;
 import org.aigps.wq.join.common.ChannelUtil;
-import org.aigps.wq.join.common.Device;
+import org.aigps.wq.join.common.ClientDevice;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -12,9 +12,9 @@ public class NetTimeoutJob implements Runnable{
 	public void run() {
 		long now = System.currentTimeMillis();
 		try {
-			for(Device device : ChannelUtil.getDeviceMap().values()) {
+			for(ClientDevice device : ChannelUtil.getDeviceMap().values()) {
 				if(now - device.getLastTime() > Cfg.socketTimeout) {
-					log.error("³¬Ê±ÏÂÏß£º"+device.getDeviceId());
+					log.error("ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ß£ï¿½"+device.getDeviceId());
 					device.getChannel().close();
 				}
 			}

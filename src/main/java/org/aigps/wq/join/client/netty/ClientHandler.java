@@ -23,14 +23,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 	
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    	log.error("ÊÕµ½ÊÖ»ú¿Í»§¶ËÁ´½Ó");
+    	log.error("ï¿½Õµï¿½ï¿½Ö»ï¿½Í»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½");
     }
     
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
     	ChannelUtil.removeDevice(ctx.channel());
     	ctx.close();
-    	log.error("ÊÖ»ú¿Í»§¶Ë¹Ø±ÕÁ´½Ó");
+    	log.error("ï¿½Ö»ï¿½Í»ï¿½ï¿½Ë¹Ø±ï¿½ï¿½ï¿½ï¿½ï¿½");
     }
     
     @Override
@@ -55,31 +55,31 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 
 	private static IHandler getHandler(String cmd) {
-		if (HandleResponse.CMD.equals(cmd)) {//Í¨ÓÃÓ¦´ð
+		if (HandleResponse.CMD.equals(cmd)) {//Í¨ï¿½ï¿½Ó¦ï¿½ï¿½
 			return HandleResponse.getInstance();
 		}
-		if (HandleActive.CMD.equals(cmd)) {//¼¤»î
+		if (HandleActive.CMD.equals(cmd)) {//ï¿½ï¿½ï¿½ï¿½
 			return HandleActive.getInstance();
 		}
-		if (HandleSetting.CMD.equals(cmd)) {//ÉèÖÃ
+		if (HandleSetting.CMD.equals(cmd)) {//ï¿½ï¿½ï¿½ï¿½
 			return HandleSetting.getInstance();
 		}
-		if (HandleKeepAlive.CMD.equals(cmd)) {//ÐÄÌø
+		if (HandleKeepAlive.CMD.equals(cmd)) {//ï¿½ï¿½ï¿½ï¿½
 			return HandleKeepAlive.getInstance();
 		}
-		if (HandlePosition.CMD.equals(cmd)) {//¶¨Î»
+		if (HandlePosition.CMD.equals(cmd)) {//ï¿½ï¿½Î»
 			return HandlePosition.getInstance();
 		}
-		if (HandleSign.CMD.equals(cmd)) {//Ç©µ½
+		if (HandleSign.CMD.equals(cmd)) {//Ç©ï¿½ï¿½
 			return HandleSign.getInstance();
 		}
-		if (HandleStatePhone.CMD.equals(cmd)) {//ÊÖ»ú¿ª¹Ø»ú
+		if (HandleStatePhone.CMD.equals(cmd)) {//ï¿½Ö»ï¿½Ø»ï¿½
 			return HandleStatePhone.getInstance();
 		}
-		if (HandleStateNet.CMD.equals(cmd)) {//ÊÖ»ú¿ª¹ØÍøÂç
+		if (HandleStateNet.CMD.equals(cmd)) {//ï¿½Ö»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 			return HandleStateNet.getInstance();
 		}
-		if (HandleStateGps.CMD.equals(cmd)) {//ÊÖ»ú¿ª¹ØGPS
+		if (HandleStateGps.CMD.equals(cmd)) {//ï¿½Ö»ï¿½ï¿½GPS
 			return HandleStateGps.getInstance();
 		}
 		

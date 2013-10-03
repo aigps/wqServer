@@ -11,14 +11,14 @@ import org.apache.commons.logging.LogFactory;
 public abstract class IHandler {
 	private static final Log log = LogFactory.getLog(IHandler.class);
 
-	//½ÓÊÕµ½ÊÖ»ú·¢À´µÄÏûÏ¢
+	//æ¥æ”¶åˆ°æ‰‹æœºå‘æ¥çš„æ¶ˆæ¯
 	public abstract void receive(Channel channel, String[] msg);
 
-	//ÏòÊÖ»ú·¢ËÍÏûÏ¢
+	//å‘æ‰‹æœºå‘é€æ¶ˆæ¯
 	//msg:[water...]
 	public abstract void send(String imsi, String[] msg);
 	
-	//ÏòÊÖ»ú·¢ËÍÏûÏ¢
+	//å‘æ‰‹æœºå‘é€æ¶ˆæ¯
 	//msg:[water...]
 	protected void send(String imsi, String cmd, String[] msg){
 		String msgs = "&"+cmd+"|"+StringUtils.join(msg,"|")+"&";
@@ -29,10 +29,10 @@ public abstract class IHandler {
 		}
 	}
 
-	//ÒÔÍ¨ÓÃÓ¦´ğ»Ø¸´
+	//ä»¥é€šç”¨åº”ç­”å›å¤
 	protected void response(Channel channel, String water, String cmd) {
 		String msg = "&00|"+water+"|"+cmd+"&";
-		log.error("»Ø¸´Í¨ÓÃÓ¦´ğ£º" + msg);
+		log.error("å›å¤é€šç”¨åº”ç­”ï¼š" + msg);
 		try {
 			ByteBuf buf = channel.alloc().buffer();
 			buf.writeBytes(msg.getBytes());
@@ -41,5 +41,4 @@ public abstract class IHandler {
 			log.error(e.getMessage(), e);
 		}
 	}
-
 }

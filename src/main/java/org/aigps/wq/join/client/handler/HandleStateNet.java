@@ -16,11 +16,11 @@ public class HandleStateNet extends IHandler{
 	public static IHandler getInstance(){
 		return handler;
 	}
-	
+
 	//[cmd,water,imsi,state,time]
 	public void receive(Channel channel, String[] msg) {
-		log.info("½ÓÊÕ¿ª¹ØÍøÂçĞÅÏ¢:" + Arrays.toString(msg));
-		//Í¨ÓÃÓ¦´ğ»Ø¸´
+		log.info("æ¥æ”¶å¼€å…³ç½‘ç»œä¿¡æ¯:" + Arrays.toString(msg));
+		//é€šç”¨åº”ç­”å›å¤
 		this.response(channel, msg[1], msg[0]);
 	}
 

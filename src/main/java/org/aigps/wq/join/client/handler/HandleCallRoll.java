@@ -21,11 +21,11 @@ public class HandleCallRoll extends IHandler{
 	@Override
 	public void receive(Channel channel, String[] msg) {
 	}
-	
+
 	@Override
 	//msg: [water]
 	public void send(String imsi, String[] msg) {
-		log.info("½ÓÊÕµ½µãÃûÖ¸Áî:" + imsi + ":" + Arrays.toString(msg));
+		log.info("æ¥æ”¶åˆ°ç‚¹åæŒ‡ä»¤:" + imsi + ":" + Arrays.toString(msg));
 		super.send(imsi, CMD, msg);
 	}                 
 
