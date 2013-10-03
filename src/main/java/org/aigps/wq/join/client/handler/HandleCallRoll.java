@@ -18,11 +18,9 @@ public class HandleCallRoll extends IHandler{
 		return handler;
 	}
 
-	@Override
 	public void receive(Channel channel, String[] msg) {
 	}
 
-	@Override
 	//msg: [water]
 	public void send(String imsi, String[] msg) {
 		log.info("接收到点名指令:" + imsi + ":" + Arrays.toString(msg));

@@ -17,7 +17,6 @@ public class HandlePosition extends IHandler{
 		return handler;
 	}
 
-	@Override
 	//[cmd,water,imsi,state,time,lng,lat,height,accuracy,speed,direction,provider]
 	public void receive(Channel channel, String[] msg) {
 		log.info("接收定位信息:" + Arrays.toString(msg));
@@ -26,7 +25,6 @@ public class HandlePosition extends IHandler{
 		this.response(channel, msg[1], msg[0]);
 	}
 
-	@Override
 	public void send(String imsi, String[] msg) {
 	}
 

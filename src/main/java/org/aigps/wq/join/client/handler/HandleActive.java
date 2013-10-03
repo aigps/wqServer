@@ -17,13 +17,11 @@ public class HandleActive extends IHandler{
 		return handler;
 	}
 
-	@Override
+	//[cmd,water,imsi,phone]
 	public void receive(Channel channel, String[] msg) {
-		//[cmd,water,imsi,phone]
 		log.info("接收激活信息:" + Arrays.toString(msg));
 	}
 	
-	@Override
 	//msg: [water,ip,port]
 	public void send(String imsi, String[] msg) {
 		log.info("下发激活指令:" + imsi + ":" + Arrays.toString(msg));

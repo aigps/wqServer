@@ -18,7 +18,6 @@ public class HandleKeepAlive extends IHandler{
 		return handler;
 	}
 
-	@Override
 	//[cmd,water,imsi]
 	public void receive(Channel channel, String[] msg) {
 		log.info("接收心跳指令:" + Arrays.toString(msg));
@@ -31,7 +30,6 @@ public class HandleKeepAlive extends IHandler{
 		channel.writeAndFlush(msg);
 	}
 	
-	@Override
 	public void send(String imis, String[] msg) {
 	}
 	
