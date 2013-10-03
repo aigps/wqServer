@@ -76,24 +76,6 @@ public class ChannelUtil {
 		}
 	}
 	
-	public static String getClientDeviceId(Channel channel)throws Exception{
-		for(Device device : clientDeviceMap.values()){
-			if(channel == device.getChannel()){
-				return device.getDeviceId();
-			}
-		}
-		return null;
-	}
-
-	public static String getServerDeviceId(Channel channel)throws Exception{
-		for(Device device : serverDeviceMap.values()){
-			if(channel == device.getChannel()){
-				return device.getDeviceId();
-			}
-		}
-		return null;
-	}
-	
 	public static void removeClientDevice(Channel channel)throws Exception{
 		for(Device device : clientDeviceMap.values()){
 			if(channel == device.getChannel()){
