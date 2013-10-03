@@ -23,14 +23,14 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 	
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    	log.error("ÊÕµ½ÊÖ»ú·şÎñ¶ËÁ´½Ó");
+    	log.error("æ”¶åˆ°æ‰‹æœºæœåŠ¡ç«¯é“¾æ¥");
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    	ChannelUtil.removeDevice(ctx.channel());
+    	ChannelUtil.removeServerDevice(ctx.channel());
     	ctx.close();
-    	log.error("ÊÖ»ú·şÎñ¶Ë¹Ø±ÕÁ´½Ó");
+    	log.error("æ‰‹æœºæœåŠ¡ç«¯å…³é—­é“¾æ¥");
     }
     
     @Override
@@ -40,7 +40,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     	}
     	// [cmd,imsi,...]
     	String[] items = ((String)msg).split("\\|");
-		ChannelUtil.setChannel(items[1], ctx.channel());
+		ChannelUtil.setServerChannel(items[1], ctx.channel());
 		
 		IHandler handler = getHandler(items[0]);
 		if (handler != null) {
@@ -55,31 +55,31 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
 
 
 	private static IHandler getHandler(String cmd) {
-		if (HandleResponse.CMD.equals(cmd)) {//Í¨ÓÃÓ¦´ğ
+		if (HandleResponse.CMD.equals(cmd)) {//é€šç”¨åº”ç­”
 			return HandleResponse.getInstance();
 		}
-		if (HandleActive.CMD.equals(cmd)) {//¼¤»î
+		if (HandleActive.CMD.equals(cmd)) {//æ¿€æ´»
 			return HandleActive.getInstance();
 		}
-		if (HandleSetting.CMD.equals(cmd)) {//ÉèÖÃ
+		if (HandleSetting.CMD.equals(cmd)) {//è®¾ç½®
 			return HandleSetting.getInstance();
 		}
-		if (HandleKeepAlive.CMD.equals(cmd)) {//ĞÄÌø
+		if (HandleKeepAlive.CMD.equals(cmd)) {//å¿ƒè·³
 			return HandleKeepAlive.getInstance();
 		}
-		if (HandlePosition.CMD.equals(cmd)) {//¶¨Î»
+		if (HandlePosition.CMD.equals(cmd)) {//å®šä½
 			return HandlePosition.getInstance();
 		}
-		if (HandleSign.CMD.equals(cmd)) {//Ç©µ½
+		if (HandleSign.CMD.equals(cmd)) {//ç­¾åˆ°
 			return HandleSign.getInstance();
 		}
-		if (HandleStatePhone.CMD.equals(cmd)) {//ÊÖ»ú¿ª¹Ø»ú
+		if (HandleStatePhone.CMD.equals(cmd)) {//æ‰‹æœºå¼€å…³æœº
 			return HandleStatePhone.getInstance();
 		}
-		if (HandleStateNet.CMD.equals(cmd)) {//ÊÖ»ú¿ª¹ØÍøÂç
+		if (HandleStateNet.CMD.equals(cmd)) {//æ‰‹æœºå¼€å…³ç½‘ç»œ
 			return HandleStateNet.getInstance();
 		}
-		if (HandleStateGps.CMD.equals(cmd)) {//ÊÖ»ú¿ª¹ØGPS
+		if (HandleStateGps.CMD.equals(cmd)) {//æ‰‹æœºå¼€å…³GPS
 			return HandleStateGps.getInstance();
 		}
 		

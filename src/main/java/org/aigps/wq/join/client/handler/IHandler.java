@@ -23,7 +23,7 @@ public abstract class IHandler {
 	protected void send(String imsi, String cmd, String[] msg){
 		String msgs = "&"+cmd+"|"+StringUtils.join(msg,"|")+"&";
 		try {
-			ChannelUtil.sendMsg(imsi, msgs);
+			ChannelUtil.sendClientMsg(imsi, msgs);
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);
 		}

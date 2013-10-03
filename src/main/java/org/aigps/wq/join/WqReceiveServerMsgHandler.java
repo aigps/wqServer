@@ -3,24 +3,23 @@ package org.aigps.wq.join;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.aigps.wq.SmsClient;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.gps.util.common.DateUtil;
 
 /**
- * @Title£º<Àà±êÌâ>
- * @Description£º<ÀàÃèÊö>
+ * @Titleï¿½ï¿½<ï¿½ï¿½ï¿½ï¿½ï¿½>
+ * @Descriptionï¿½ï¿½<ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½>
  *
  * @author ccq
  * @version 1.0
  *
- * Create Date£º  2012-3-2ÉÏÎç11:17:12
- * Modified By£º  <ÐÞ¸ÄÈËÖÐÎÄÃû»òÆ´ÒôËõÐ´>
- * Modified Date£º<ÐÞ¸ÄÈÕÆÚ£¬¸ñÊ½:YYYY-MM-DD>
+ * Create Dateï¿½ï¿½  2012-3-2ï¿½ï¿½ï¿½ï¿½11:17:12
+ * Modified Byï¿½ï¿½  <ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ´ï¿½ï¿½ï¿½ï¿½Ð´>
+ * Modified Dateï¿½ï¿½<ï¿½Þ¸ï¿½ï¿½ï¿½ï¿½Ú£ï¿½ï¿½ï¿½Ê½:YYYY-MM-DD>
  *
- * Copyright£ºCopyright(C),1995-2011 ÕãIPC±¸09004804ºÅ
- * Company£ºº¼ÖÝÔªÂë¿Æ¼¼ÓÐÏÞ¹«Ë¾
+ * Copyrightï¿½ï¿½Copyright(C),1995-2011 ï¿½ï¿½IPCï¿½ï¿½09004804ï¿½ï¿½
+ * Companyï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ôªï¿½ï¿½Æ¼ï¿½ï¿½ï¿½ï¿½Þ¹ï¿½Ë¾
  */
 public class WqReceiveServerMsgHandler implements Observer {
 	private static final Log log = LogFactory.getLog(WqReceiveServerMsgHandler.class);
@@ -33,16 +32,16 @@ public class WqReceiveServerMsgHandler implements Observer {
 				String mobileType = params[0];
 				String classId = "";
 				
-				if("LCSNow".equalsIgnoreCase(cmdType)){//µ¥´Î¶¨Î»
-					SmsClient.sendSms(classId, phone, "01", "1", params[1], "0", "#0",params[2]);
+				if("LCSNow".equalsIgnoreCase(cmdType)){//ï¿½ï¿½ï¿½Î¶ï¿½Î»
+//					SmsClient.sendSms(classId, phone, "01", "1", params[1], "0", "#0",params[2]);
 				}
-				else if("ActiveLCS".equalsIgnoreCase(cmdType)){//¶¨Î»¼¤»î
-					int secondInterval = Integer.parseInt(params[1]);//¶¨Î»¼ä¸ô
-					String startTime = params[2];//¿ªÊ¼Ê±¼ä
-					String endTime = params[3];//½áÊøÊ±¼ä
-					String fixModel = params[4];//¶¨Î»ÀàÐÍ
-					String workWeekDays = params[5];//ÉÏ°àÐÇÆÚ
-					String smsSender = params[6];//Íø¹Ø
+				else if("ActiveLCS".equalsIgnoreCase(cmdType)){//ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+					int secondInterval = Integer.parseInt(params[1]);//ï¿½ï¿½Î»ï¿½ï¿½ï¿½
+					String startTime = params[2];//ï¿½ï¿½Ê¼Ê±ï¿½ï¿½
+					String endTime = params[3];//ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½
+					String fixModel = params[4];//ï¿½ï¿½Î»ï¿½ï¿½ï¿½ï¿½
+					String workWeekDays = params[5];//ï¿½Ï°ï¿½ï¿½ï¿½ï¿½ï¿½
+					String smsSender = params[6];//ï¿½ï¿½ï¿½
 					long diffTime = DateUtil.getBetweenTime(startTime, endTime, "HHmmss");
 					if(diffTime <= 0){
 						diffTime = 24*60*60*1000 + diffTime;
@@ -53,10 +52,10 @@ public class WqReceiveServerMsgHandler implements Observer {
 					if("hxylSmsSender".equals(smsSender)){
 						otherParams += "#" + endTime + "#" + workWeekDays + "#";
 					}
-					SmsClient.sendSms(classId, phone, "02", "3", fixModel, "0", otherParams,smsSender);
+//					SmsClient.sendSms(classId, phone, "02", "3", fixModel, "0", otherParams,smsSender);
 				}
-				else if("CancelActiveLCS".equalsIgnoreCase(cmdType)){//¶¨Î»È¡Ïû¼¤»î
-					SmsClient.sendSms(classId, phone, "04", "4", null, null, null,params[1]);
+				else if("CancelActiveLCS".equalsIgnoreCase(cmdType)){//ï¿½ï¿½Î»È¡ï¿½ï¿½ï¿½
+//					SmsClient.sendSms(classId, phone, "04", "4", null, null, null,params[1]);
 				}
 			} catch (Exception e) {
 				log.error(e.getMessage(),e);

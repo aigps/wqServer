@@ -23,14 +23,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 	
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
-    	log.error("�յ��ֻ�ͻ�������");
+    	log.error("收到手机客户端链接");
     }
     
     @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-    	ChannelUtil.removeDevice(ctx.channel());
+    	ChannelUtil.removeClientDevice(ctx.channel());
     	ctx.close();
-    	log.error("�ֻ�ͻ��˹ر�����");
+    	log.error("手机客户端关闭链接");
     }
     
     @Override
@@ -40,7 +40,7 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     	}
     	// [cmd,water,imsi,...]
     	String[] items = ((String)msg).split("\\|");
-		ChannelUtil.setChannel(items[2], ctx.channel());
+		ChannelUtil.setClientChannel(items[2], ctx.channel());
 		
 		IHandler handler = getHandler(items[0]);
 		if (handler != null) {
@@ -55,31 +55,31 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
 
 	private static IHandler getHandler(String cmd) {
-		if (HandleResponse.CMD.equals(cmd)) {//ͨ��Ӧ��
+		if (HandleResponse.CMD.equals(cmd)) {//通用应答
 			return HandleResponse.getInstance();
 		}
-		if (HandleActive.CMD.equals(cmd)) {//����
+		if (HandleActive.CMD.equals(cmd)) {//激活
 			return HandleActive.getInstance();
 		}
-		if (HandleSetting.CMD.equals(cmd)) {//����
+		if (HandleSetting.CMD.equals(cmd)) {//设置
 			return HandleSetting.getInstance();
 		}
-		if (HandleKeepAlive.CMD.equals(cmd)) {//����
+		if (HandleKeepAlive.CMD.equals(cmd)) {//心跳
 			return HandleKeepAlive.getInstance();
 		}
-		if (HandlePosition.CMD.equals(cmd)) {//��λ
+		if (HandlePosition.CMD.equals(cmd)) {//定位
 			return HandlePosition.getInstance();
 		}
-		if (HandleSign.CMD.equals(cmd)) {//ǩ��
+		if (HandleSign.CMD.equals(cmd)) {//签到
 			return HandleSign.getInstance();
 		}
-		if (HandleStatePhone.CMD.equals(cmd)) {//�ֻ�ػ�
+		if (HandleStatePhone.CMD.equals(cmd)) {//手机开关机
 			return HandleStatePhone.getInstance();
 		}
-		if (HandleStateNet.CMD.equals(cmd)) {//�ֻ������
+		if (HandleStateNet.CMD.equals(cmd)) {//手机开关网络
 			return HandleStateNet.getInstance();
 		}
-		if (HandleStateGps.CMD.equals(cmd)) {//�ֻ��GPS
+		if (HandleStateGps.CMD.equals(cmd)) {//手机开关GPS
 			return HandleStateGps.getInstance();
 		}
 		

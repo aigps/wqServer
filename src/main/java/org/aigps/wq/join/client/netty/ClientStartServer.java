@@ -48,7 +48,7 @@ public class ClientStartServer {
 						}
 					});
 
-			log.error("�����ֻ�ͻ��˶˿�:"+port);
+			log.error("启动手机客户端端口:"+port);
 			b.bind(port).sync().channel().closeFuture().sync();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

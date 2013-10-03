@@ -5,7 +5,7 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import org.aigps.wq.join.common.ChannelUtil;
-import org.aigps.wq.join.common.ClientDevice;
+import org.aigps.wq.join.common.Device;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -15,7 +15,7 @@ public class SendMsgJob implements Runnable{
 	private ThreadPoolExecutor pool = new ThreadPoolExecutor(2, 5, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>(500000));
 	
 	public void run() {
-		for(final ClientDevice device : ChannelUtil.getDeviceMap().values()){
+		for(final Device device : ChannelUtil.getClientDeviceMap().values()){
 			try {
 				if(device != null && !device.isSendingMsg() && !device.msgIsEmpty()){
 					pool.execute(new Runnable() {
@@ -31,7 +31,7 @@ public class SendMsgJob implements Runnable{
 		
 		long notRunTask = pool.getTaskCount()-pool.getCompletedTaskCount();
 		if(notRunTask > 3000){
-			log.error("��̫����Ϣ��Ҫ���ͣ�������!!!  count=" +notRunTask);
+			log.error("有太多消息需要发送，请留意!!!  count=" +notRunTask);
 		}
 	}
 }

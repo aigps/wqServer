@@ -9,22 +9,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-/**
- * @Title��Զ�̻Ự�ն�
- * @Description��<������>
- *
- * @author ccq
- * @version 1.0
- *
- * Create Date��  2012-10-23����09:02:59
- * Modified By��  <�޸����������ƴ����д>
- * Modified Date��<�޸����ڣ���ʽ:YYYY-MM-DD>
- *
- * Copyright��Copyright(C),1995-2011 ��IPC��09004804��
- * Company�������е��Ƽ����޹�˾
- */
-public class ClientDevice {
-	private static final Log log = LogFactory.getLog(ClientDevice.class);
+public class Device {
+	private static final Log log = LogFactory.getLog(Device.class);
 	
 	private String deviceId;
 	private Channel channel;
@@ -32,7 +18,7 @@ public class ClientDevice {
 	private AtomicBoolean isSending = new AtomicBoolean(false);
 	private Queue<String> msgs = new ConcurrentLinkedQueue<String>();
 	
-	public ClientDevice(String deviceId,Channel channel) {
+	public Device(String deviceId,Channel channel) {
 		this.deviceId = deviceId;
 		this.channel = channel;
 		this.lastTime = System.currentTimeMillis();
@@ -42,10 +28,6 @@ public class ClientDevice {
 		msgs.add(msg);
 	}
 	
-	/**
-	 * ���͸�Զ���ն�
-	 * @throws Exception
-	 */
 	public void sendMsg(){
 		if(!msgs.isEmpty() && isSending.compareAndSet(false, true)){
 			try {

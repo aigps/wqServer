@@ -14,19 +14,19 @@ import org.apache.commons.logging.LogFactory;
 
 /**
  * <pre>
- * Title:º½Ê¢Ğ­Òé½â°ü´¦ÀíÀà
+ * Title:èˆªç››åè®®è§£åŒ…å¤„ç†ç±»
  * Description: 
  * </pre>
  * @author chencongquan  chencongquan@gmail.com
  * @version 1.00.00
  * <pre>
- * ĞŞ¸Ä¼ÇÂ¼
- *    ĞŞ¸Äºó°æ±¾:     ĞŞ¸ÄÈË£º  ĞŞ¸ÄÈÕÆÚ:     ĞŞ¸ÄÄÚÈİ: 
+ * ä¿®æ”¹è®°å½•
+ *    ä¿®æ”¹åç‰ˆæœ¬:     ä¿®æ”¹äººï¼š  ä¿®æ”¹æ—¥æœŸ:     ä¿®æ”¹å†…å®¹: 
  * </pre>
  */
 @SuppressWarnings("unused")
 public class ServerDecoder extends ByteToMessageDecoder{
-	private static final Log log = LogFactory.getLog(ServerDecoder.class);
+	private static final Log log = LogFactory.getLog("PhoneDecoder");
 	
 	private static char SPLIT_CHART = '&';
 	
@@ -61,7 +61,7 @@ public class ServerDecoder extends ByteToMessageDecoder{
 				return;
 			}
 			
-			//Á½¸ö&&ÏàÁ¬£¬È¥µôµÚÒ»¸ö¡£
+			//ä¸¤ä¸ª&&ç›¸è¿ï¼Œå»æ‰ç¬¬ä¸€ä¸ªã€‚
 			if(endIndex - startIndex == 1) {
 				in.readBytes(new byte[startIndex + 1]);
 				return;
@@ -70,7 +70,7 @@ public class ServerDecoder extends ByteToMessageDecoder{
 			byte[] bytes = new byte[endIndex + 1];
 			in.readBytes(bytes);
 
-			//È¥µôÍ·ºÍÎ²µÄ&
+			//å»æ‰å¤´å’Œå°¾çš„&
 			byte[] array = new byte[endIndex - startIndex - 1];
 			System.arraycopy(bytes, startIndex + 1, array, 0, array.length);
 			out.add(new String(array));

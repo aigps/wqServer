@@ -48,7 +48,7 @@ public class ServerStartServer {
 						}
 					});
 
-			log.error("Æô¶¯ÊÖ»ú·şÎñ¶Ë¶Ë¿Ú:"+port);
+			log.error("å¯åŠ¨æ‰‹æœºæœåŠ¡ç«¯ç«¯å£:"+port);
 			b.bind(port).sync().channel().closeFuture().sync();
 		} catch (Exception e) {
 			log.error(e.getMessage(), e);

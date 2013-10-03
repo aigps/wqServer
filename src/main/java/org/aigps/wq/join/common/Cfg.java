@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 
 public class Cfg {
 
-	// ¼àÌý¶Ë¿Ú
 	public static Integer tcpClientPort;
 	public static Integer tcpServerPort;
 	public static Integer socketTimeout;
