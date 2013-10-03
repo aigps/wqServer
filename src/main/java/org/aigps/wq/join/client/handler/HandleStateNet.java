@@ -19,8 +19,8 @@ public class HandleStateNet extends IHandler{
 
 	//[cmd,water,imsi,state,time]
 	public void receive(Channel channel, String[] msg) {
-		log.info("æ¥æ”¶å¼€å…³ç½‘ç»œä¿¡æ¯:" + Arrays.toString(msg));
-		//é€šç”¨åº”ç­”å›å¤
+		log.info("½ÓÊÕ¿ª¹ØÍøÂçĞÅÏ¢:" + Arrays.toString(msg));
+		//Í¨ÓÃÓ¦´ğ»Ø¸´
 		this.response(channel, msg[1], msg[0]);
 	}
 

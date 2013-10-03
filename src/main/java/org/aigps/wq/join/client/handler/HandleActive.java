@@ -17,15 +17,14 @@ public class HandleActive extends IHandler{
 		return handler;
 	}
 
-	//[cmd,water,imsi,phone]
 	public void receive(Channel channel, String[] msg) {
-		log.info("æ¥æ”¶æ¿€æ´»ä¿¡æ¯:" + Arrays.toString(msg));
+		//[cmd,water,imsi,phone]
+		log.info("½ÓÊÕ¼¤»îĞÅÏ¢:" + Arrays.toString(msg));
 	}
 	
 	//msg: [water,ip,port]
 	public void send(String imsi, String[] msg) {
-		log.info("ä¸‹å‘æ¿€æ´»æŒ‡ä»¤:" + imsi + ":" + Arrays.toString(msg));
+		log.info("ÏÂ·¢¼¤»îÖ¸Áî:" + imsi + ":" + Arrays.toString(msg));
 		super.send(imsi, CMD, msg);
 	}
-
 }

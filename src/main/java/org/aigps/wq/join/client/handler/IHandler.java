@@ -11,14 +11,14 @@ import org.apache.commons.logging.LogFactory;
 public abstract class IHandler {
 	private static final Log log = LogFactory.getLog(IHandler.class);
 
-	//æ¥æ”¶åˆ°æ‰‹æœºå‘æ¥çš„æ¶ˆæ¯
+	//½ÓÊÕµ½ÊÖ»ú·¢À´µÄÏûÏ¢
 	public abstract void receive(Channel channel, String[] msg);
 
-	//å‘æ‰‹æœºå‘é€æ¶ˆæ¯
+	//ÏòÊÖ»ú·¢ËÍÏûÏ¢
 	//msg:[water...]
 	public abstract void send(String imsi, String[] msg);
 	
-	//å‘æ‰‹æœºå‘é€æ¶ˆæ¯
+	//ÏòÊÖ»ú·¢ËÍÏûÏ¢
 	//msg:[water...]
 	protected void send(String imsi, String cmd, String[] msg){
 		String msgs = "&"+cmd+"|"+StringUtils.join(msg,"|")+"&";
@@ -29,10 +29,10 @@ public abstract class IHandler {
 		}
 	}
 
-	//ä»¥é€šç”¨åº”ç­”å›å¤
+	//ÒÔÍ¨ÓÃÓ¦´ğ»Ø¸´
 	protected void response(Channel channel, String water, String cmd) {
 		String msg = "&00|"+water+"|"+cmd+"&";
-		log.error("å›å¤é€šç”¨åº”ç­”ï¼š" + msg);
+		log.error("»Ø¸´Í¨ÓÃÓ¦´ğ£º" + msg);
 		try {
 			ByteBuf buf = channel.alloc().buffer();
 			buf.writeBytes(msg.getBytes());

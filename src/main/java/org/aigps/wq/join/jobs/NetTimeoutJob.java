@@ -21,7 +21,7 @@ public class NetTimeoutJob implements Runnable{
 		try {
 			for(Device device : devices) {
 				if(now - device.getLastTime() > Cfg.socketTimeout) {
-					log.error("è¶…æ—¶ä¸‹çº¿ï¼š"+device.getDeviceId());
+					log.error("³¬Ê±ÏÂÏß£º"+device.getDeviceId());
 					device.getChannel().close();
 				}
 			}

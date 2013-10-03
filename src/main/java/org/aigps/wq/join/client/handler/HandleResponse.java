@@ -19,7 +19,7 @@ public class HandleResponse extends IHandler{
 
 	//[CMD,water,imsi,cmd]
 	public void receive(Channel channel, String[] msg) {
-		log.info("鎺ユ敹閫氱敤搴旂瓟:" + Arrays.toString(msg));
+		log.info("接收通用应答:" + Arrays.toString(msg));
 	}
 
 	public void send(String imsi, String[] msg) {

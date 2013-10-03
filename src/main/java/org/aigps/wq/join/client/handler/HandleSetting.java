@@ -20,13 +20,12 @@ public class HandleSetting extends IHandler{
 
 	//[cmd,water,imsi,state,start_time,end_time,inteval,weeks]
 	public void receive(Channel channel, String[] msg) {
-		log.info("鎺ユ敹瀹氫綅璁剧疆鍥炲鎸囦护:" + Arrays.toString(msg));
+		log.info("接收定位设置回复指令:" + Arrays.toString(msg));
 	}
 	
 	//[water,start_time,end_time,inteval,week]
 	public void send(String imsi, String[] msg) {
-		log.info("涓嬪彂瀹氫綅璁剧疆鎸囦护:" + imsi + ":" + Arrays.toString(msg));
+		log.info("下发定位设置指令:" + imsi + ":" + Arrays.toString(msg));
 		super.send(imsi, CMD, msg);
 	}
-	
 }

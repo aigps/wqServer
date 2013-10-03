@@ -37,7 +37,7 @@ public class SendMsgJob implements Runnable{
 		
 		long notRunTask = pool.getTaskCount()-pool.getCompletedTaskCount();
 		if(notRunTask > 3000){
-			log.error("æœ‰å¤ªå¤šæ¶ˆæ¯éœ€è¦å‘é€ï¼Œè¯·ç•™æ„!!!  count=" +notRunTask);
+			log.error("ÓĞÌ«¶àÏûÏ¢ĞèÒª·¢ËÍ£¬ÇëÁôÒâ!!!  count=" +notRunTask);
 		}
 	}
 }

@@ -23,8 +23,7 @@ public class HandleCallRoll extends IHandler{
 
 	//msg: [water]
 	public void send(String imsi, String[] msg) {
-		log.info("æ¥æ”¶åˆ°ç‚¹åæŒ‡ä»¤:" + imsi + ":" + Arrays.toString(msg));
+		log.info("½ÓÊÕµ½µãÃûÖ¸Áî:" + imsi + ":" + Arrays.toString(msg));
 		super.send(imsi, CMD, msg);
-	}                 
-
+	}
 }

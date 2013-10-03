@@ -20,11 +20,11 @@ public class HandleKeepAlive extends IHandler{
 
 	//[cmd,water,imsi]
 	public void receive(Channel channel, String[] msg) {
-		log.info("鎺ユ敹蹇冭烦鎸囦护:" + Arrays.toString(msg));
+		log.info("接收心跳指令:" + Arrays.toString(msg));
 		response(channel, msg[1]);
 	}
 
-	//蹇冭烦鍥炲锛屼笉鑳戒互閫氱敤搴旂瓟鍥炲
+	//心跳回复，不能以通用应答回复
 	private void response(Channel channel, String water) {
 		byte[] msg = ("&"+CMD+"|"+water+"&").getBytes();
 		channel.writeAndFlush(msg);
