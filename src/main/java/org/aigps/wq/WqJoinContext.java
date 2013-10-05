@@ -9,18 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 /**
- * @Title��<�����>
- * @Description��<������>
+ * 
+ * @author Administrator
  *
- * @author ccq
- * @version 1.0
- *
- * Create Date��  2012-3-2����10:58:38
- * Modified By��  <�޸����������ƴ����д>
- * Modified Date��<�޸����ڣ���ʽ:YYYY-MM-DD>
- *
- * Copyright��Copyright(C),1995-2011 ��IPC��09004804��
- * Company������Ԫ��Ƽ����޹�˾
  */
 public class WqJoinContext {
 	private static final Log log = LogFactory.getLog(WqJoinContext.class);
@@ -36,10 +27,11 @@ public class WqJoinContext {
 	
 	public static void main(String[] args) {
 		try {
-			JoinServer.startup();
 			
 			context = new ClassPathXmlApplicationContext(new String[]{"wqJoinContext.xml"});
 			WqConfig wqConfig = getBean("wqConfig", WqConfig.class);
+			
+			JoinServer.startup();
 			log.error("  start wq join  success!");
 			while(true){
 				Thread.sleep(30*1000);

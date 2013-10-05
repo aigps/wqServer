@@ -1,7 +1,5 @@
 package org.aigps.wq.mq;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
@@ -16,6 +14,8 @@ import javax.jms.TextMessage;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
 
@@ -33,6 +33,8 @@ import com.alibaba.fastjson.JSON;
  * Copyright：Copyright(C),1995-2011 浙IPC备09004804号
  * Company：杭州元码科技有限公司
  */
+@Component
+@DependsOn("vmMqFactory")
 public class WqJoinMqService {
 	private static final Log log = LogFactory.getLog(WqJoinMqService.class);
     private static transient Connection connection;
@@ -53,7 +55,7 @@ public class WqJoinMqService {
 	 * 
 	 */
 	public WqJoinMqService()throws Exception {
-    	connection = VmMQFactory.getFactory().createConnection();
+    	connection = VmMqFactory.getFactory().createConnection();
         connection.start();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         producer = session.createProducer(null);
@@ -64,6 +66,7 @@ public class WqJoinMqService {
 				try {
 					if(recCounter.get()-sendCounter.get()>10000){
 						log.warn("---------------大量CAN原始消息未发送出去，请关注！");
+						clearMsg();
 					}
 					while(msgQueue.peek()!=null){
 						producer.send(destination, msgQueue.poll());
@@ -91,17 +94,28 @@ public class WqJoinMqService {
 			recCounter.incrementAndGet();
 		}
 	}
+	/**
+	 * 消除消息队列，防止内存溢出。
+	 * @throws Exception
+	 */
+	private static void clearMsg()throws Exception{
+		log.error("清除缓存的消息");
+		while(msgQueue.peek()!=null){
+			msgQueue.poll();
+			sendCounter.incrementAndGet();
+		}
+	}
 	
 	public static void main(String[] args) {
-		
 		try {
-			VmMQFactory factory = new VmMQFactory("tcp://127.0.0.1:12300");
+			VmMqFactory factory = new VmMqFactory();
+			factory.setUrl("tcp://127.0.0.1:12300");
+			factory.init();
 			WqJoinMqService canMsgMqService = new WqJoinMqService();
 			while(true){
 				Thread.sleep(100);
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

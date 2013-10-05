@@ -1,9 +1,12 @@
 package org.aigps.wq.mq;
 
+import javax.annotation.PostConstruct;
 import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 /**
  * @Title：<类标题>
@@ -19,7 +22,8 @@ import org.apache.activemq.broker.BrokerService;
  * Copyright：Copyright(C),1995-2011 浙IPC备09004804号
  * Company：杭州元码科技有限公司
  */
-public class VmMQFactory {
+@Component
+public class VmMqFactory {
 	private static BrokerService brokerService;
 
     private static transient ConnectionFactory factory;
@@ -29,25 +33,28 @@ public class VmMQFactory {
 	public static String getUrl() {
 		return url;
 	}
-
+	@Value("${mq.msg.url}")
 	public  void setUrl(String url) {
-		VmMQFactory.url = url;
+		VmMqFactory.url = url;
 	}
     /**
 	 * 
 	 */
-	public VmMQFactory(String url)throws Exception {
-		setUrl(url);
+	public VmMqFactory() {
+	}
+	
+	@PostConstruct
+	public void init()throws Exception {
 		brokerService = new BrokerService();
         //configure the broker to use the Memory Store
 		brokerService.setPersistent(false);
 		brokerService.getSystemUsage().getMemoryUsage().setLimit(10*1024*1024);
-		brokerService.setBrokerName("gpsAdapter");  
+		brokerService.setBrokerName("WqMsg");  
         //Add a transport connector
 		brokerService.addConnector(getUrl());
         //now start the broker
 		brokerService.start();
-    	factory = new ActiveMQConnectionFactory("vm://gpsAdapter?jms.useAsyncSend=true");
+    	factory = new ActiveMQConnectionFactory("vm://WqMsg?jms.useAsyncSend=true");
 	}
 
 	/**
@@ -61,7 +68,7 @@ public class VmMQFactory {
 	 * @param brokerService the brokerService to set
 	 */
 	public static void setBrokerService(BrokerService brokerService) {
-		VmMQFactory.brokerService = brokerService;
+		VmMqFactory.brokerService = brokerService;
 	}
 
 	/**
@@ -75,7 +82,7 @@ public class VmMQFactory {
 	 * @param factory the factory to set
 	 */
 	public static void setFactory(ConnectionFactory factory) {
-		VmMQFactory.factory = factory;
+		VmMqFactory.factory = factory;
 	}
 	
 	

@@ -32,7 +32,7 @@ public class RuleCache implements ApplicationContextAware{
 	/**
 	 * 区域集合
 	 */
-	private static Map<String, WqMapRegion> regionMap = new ConcurrentLinkedHashMap.Builder<String, WqMapRegion>().build();
+	private static Map<String, WqMapRegion> regionMap = new ConcurrentLinkedHashMap.Builder<String, WqMapRegion>().maximumWeightedCapacity(10000).build();
 	public static Map<String, WqMapRegion> getRegionMap()throws Exception {
 		if(regionMap.size() == 0){
 			regionMap = loadRegionMap();
@@ -40,7 +40,7 @@ public class RuleCache implements ApplicationContextAware{
 		return regionMap;
 	}
 	public static Map<String,WqMapRegion> loadRegionMap()throws Exception{
-		Map<String, WqMapRegion> tempMap = new ConcurrentLinkedHashMap.Builder<String, WqMapRegion>().build();
+		Map<String, WqMapRegion> tempMap = new ConcurrentLinkedHashMap.Builder<String, WqMapRegion>().maximumWeightedCapacity(10000).build();
 		RuleDao ruleDao = context.getBean("ruleDao", RuleDao.class); 
 		tempMap.putAll(ruleDao.getWqMapRegion());
 		return tempMap;
@@ -50,7 +50,7 @@ public class RuleCache implements ApplicationContextAware{
 	/**
 	 * 员工生效区域对照集合(所有与员工绑定的区域ID集合)
 	 */
-	private static Map<String,Set<String>> staffRegionMap = new ConcurrentLinkedHashMap.Builder<String, Set<String>>().build();
+	private static Map<String,Set<String>> staffRegionMap = new ConcurrentLinkedHashMap.Builder<String, Set<String>>().maximumWeightedCapacity(10000).build();
 	public static Map<String, Set<String>> getStaffRegionMap()throws Exception {
 		if(staffRegionMap.size() == 0){
 			staffRegionMap = loadStaffRegionMap();
@@ -58,7 +58,7 @@ public class RuleCache implements ApplicationContextAware{
 		return staffRegionMap;
 	}
 	public static Map<String,Set<String>> loadStaffRegionMap()throws Exception{
-		Map<String, Set<String>> tempMap = new ConcurrentLinkedHashMap.Builder<String, Set<String>>().build();
+		Map<String, Set<String>> tempMap = new ConcurrentLinkedHashMap.Builder<String, Set<String>>().maximumWeightedCapacity(10000).build();
 		RuleDao ruleDao = context.getBean("ruleDao", RuleDao.class); 
 		tempMap.putAll(ruleDao.loadWqStaffRegion());
 		return tempMap;
@@ -68,7 +68,7 @@ public class RuleCache implements ApplicationContextAware{
 	/**
 	 * 员工目前所在区域集合
 	 */
-	private static Map<String, HashMap<String, WqRegionVisit>> staffVisitRegionMap = new ConcurrentLinkedHashMap.Builder<String, HashMap<String,WqRegionVisit>>().build();
+	private static Map<String, HashMap<String, WqRegionVisit>> staffVisitRegionMap = new ConcurrentLinkedHashMap.Builder<String, HashMap<String,WqRegionVisit>>().maximumWeightedCapacity(10000).build();
 	public static Map<String, HashMap<String, WqRegionVisit>> getStaffVisitRegionMap()throws Exception {
 		if(staffVisitRegionMap.size() == 0){
 			staffVisitRegionMap = loadStaffVisitRegionMap();
@@ -76,7 +76,7 @@ public class RuleCache implements ApplicationContextAware{
 		return staffVisitRegionMap;
 	}
 	public static Map<String, HashMap<String, WqRegionVisit>> loadStaffVisitRegionMap()throws Exception{
-		Map<String, HashMap<String, WqRegionVisit>> tempMap = new ConcurrentLinkedHashMap.Builder<String, HashMap<String,WqRegionVisit>>().build();
+		Map<String, HashMap<String, WqRegionVisit>> tempMap = new ConcurrentLinkedHashMap.Builder<String, HashMap<String,WqRegionVisit>>().maximumWeightedCapacity(10000).build();
 		RuleDao ruleDao = context.getBean("ruleDao", RuleDao.class); 
 		tempMap.putAll(ruleDao.getWqRegionVisit());
 		return tempMap;
@@ -232,7 +232,7 @@ public class RuleCache implements ApplicationContextAware{
 	/**
 	 * 最后一条定位
 	 */
-	public static Map<String, GisPosition> staffGpsMap = new ConcurrentLinkedHashMap.Builder<String, GisPosition>().build();
+	public static Map<String, GisPosition> staffGpsMap = new ConcurrentLinkedHashMap.Builder<String, GisPosition>().maximumWeightedCapacity(10000).build();
 	public static void refreshLastGps(GisPosition gpsModel){
 		staffGpsMap.put(gpsModel.getTmnAlias(), gpsModel);
 	}
