@@ -18,7 +18,10 @@ public class HandleCallRoll extends IHandler{
 		return handler;
 	}
 
+	//msg: [40,water,imsi,gps](gps: 0:关  1:开)
 	public void receive(Channel channel, String[] msg) {
+		log.info("接收点名回复指令:" + Arrays.toString(msg));
+		
 	}
 
 	//msg: [water]

@@ -17,7 +17,7 @@ public class HandleStateNet extends IHandler{
 		return handler;
 	}
 
-	//[cmd,water,imsi,state,time]
+	//[cmd,water,imsi,state,time] (state 0:关网络 1:开网络)
 	public void receive(Channel channel, String[] msg) {
 		log.info("接收开关网络信息:" + Arrays.toString(msg));
 		//通用应答回复
