@@ -18,7 +18,7 @@ public class HandleSetting extends IHandler{
 		return handler;
 	}
 
-	//[cmd,water,imsi,state,start_time,end_time,inteval,weeks]
+	//[cmd,water,imsi,state,start_time,end_time,inteval,weeks] (state 0:失败 1:成功)
 	public void receive(Channel channel, String[] msg) {
 		log.info("接收定位设置回复指令:" + Arrays.toString(msg));
 		

@@ -23,7 +23,7 @@ public class HandleStatePhone extends IHandler{
 		return handler;
 	}
 
-	//[cmd,water,imsi,state,time]
+	//[cmd,water,imsi,state,time] (state 0:关机 1:开机)
 	public void receive(Channel channel, String[] msg) {
 		log.info("接收开关机信息:" + Arrays.toString(msg));
 		//通用应答回复

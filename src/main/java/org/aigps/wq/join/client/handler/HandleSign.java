@@ -24,7 +24,7 @@ public class HandleSign extends IHandler{
 		return handler;
 	}
 
-	//[cmd,water,imsi,state,time]
+	//[cmd,water,imsi,state,time] (state 0:签退 1:签到)
 	public void receive(Channel channel, String[] msg) {
 		log.info("接收签到信息:" + Arrays.toString(msg));
 		//通用应答回复
