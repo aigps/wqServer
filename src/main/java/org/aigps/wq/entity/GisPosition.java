@@ -50,6 +50,8 @@ public class GisPosition implements Serializable{
 	private double latOff;
 	//定位时间yyyy-MM-dd HH:mm:ss
 	private transient String rptStrTime;
+	//(state:1定位成功;2:最近结果;3:定位超时;4:定位失败)
+	private String state;
 	
 	
 	public GisPosition() {
@@ -59,7 +61,8 @@ public class GisPosition implements Serializable{
 	public GisPosition(String[] msg)throws Exception{
 		this.setTmnKey(msg[2]);
 		this.setRptTime(msg[4]);
-		if("4".equals(msg[3])){//不能定位，跳出来
+		this.setState(msg[3]);
+		if("4".equals(getState())){//不能定位，跳出来
 			return;
 		}
 		this.setLon(Double.parseDouble(msg[5]));
@@ -200,6 +203,15 @@ public class GisPosition implements Serializable{
 	public void setLatOff(double latOff) {
 		this.latOff = latOff;
 	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+	
 
 //	public String getCellId() {
 //		return cellId;

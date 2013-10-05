@@ -14,10 +14,6 @@ import java.util.Date;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.aigps.wq.service.GpsService;
-import org.aigps.wq.service.RspService;
-import org.aigps.wq.service.SmsService;
-import org.aigps.wq.service.SttsRptService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.gps.netty4.server.http.IHttpService;
@@ -59,15 +55,10 @@ public class WqJoinHttpService  implements IHttpService{
 			XStream xstream = new XStream();
 			try{
 				if(xmlString.indexOf("<lia>") != -1){//定位信息回复
-					xmlString = GpsService.execute(xmlString, xstream);
 				}else if(xmlString.indexOf("<lta>") != -1){//立即应答消息
-					xmlString = RspService.execute(xmlString, xstream);
 				}else if(xmlString.indexOf("<status>")!=-1){//手机状态消息
-					xmlString = SttsRptService.execute(xmlString, xstream);
 				}else if(xmlString.indexOf("<messages>")!=-1){//上报短消息
-					xmlString = SmsService.execute(xmlString, xstream);
 				}else if(xmlString.indexOf("<net_test>")!=-1){//测试网络是否连接
-					log.error("测试网络连接:\n" + xmlString);
 				}else{
 					log.error("未知结构XML:\n" + xmlString);
 				}

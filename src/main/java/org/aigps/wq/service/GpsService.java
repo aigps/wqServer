@@ -1,23 +1,15 @@
 package org.aigps.wq.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import org.aigps.wq.DcGpsCache;
-import org.aigps.wq.WqJoinContext;
 import org.aigps.wq.entity.GisPosition;
-import org.aigps.wq.entity.WqTmnSttsHis;
-import org.aigps.wq.ibatis.IbatisUpdateJob;
 import org.aigps.wq.mq.MqMsg;
 import org.aigps.wq.mq.WqJoinMqService;
 import org.aigps.wq.util.DistrictUtil;
-import org.aigps.wq.xmlmodel.LiaModel;
-import org.aigps.wq.xmlmodel.Picture;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.gps.util.common.DateUtil;
 import org.gps.util.common.LonLatUtil;
-import com.thoughtworks.xstream.XStream;
 
 
 public class GpsService {
@@ -33,49 +25,6 @@ public class GpsService {
 			}
 		}
 		return retFlag;
-	}
-	
-	public static String execute(String xmlString, XStream xstream) throws Exception {
-		xstream.processAnnotations(LiaModel.class);
-		LiaModel model = (LiaModel) xstream.fromXML(xmlString);
-		List<GisPosition> gpsList = model.toGps();
-		if(gpsList == null || gpsList.isEmpty()){
-			log.error("无定位信息XML:\n" + xmlString);
-			return xmlString;
-		}
-		String phone = model.getPhone(), msId = model.getMsid();
-		log.error("有定位信息XML:\n" + xmlString);
-		Picture pic = model.getLia().getPicture();
-		
-		//上报定位信息
-		for(GisPosition gps : gpsList){
-			String tmnKey = StringUtils.isBlank(phone) ? msId : phone;
-			gps.setTmnKey(tmnKey);
-			//定位处理
-			receiveGpsInfo(gps);
-		}
-		
-		String staffId = DcGpsCache.getTmnSysIdMap().get(phone);
-		//主动签到签退，发送状态
-		if(model.isSignIn() || model.isSignOut()){
-			String status = model.isSignIn()?"98":"99";
-			
-			WqTmnSttsHis wqTmnSttsHis = new WqTmnSttsHis();
-			wqTmnSttsHis.setStaffId(msId);
-			wqTmnSttsHis.setRptTime(DateUtil.converDateFormat(model.getTime(), DateUtil.YMDHMS, DateUtil.YMD_HMS));
-			wqTmnSttsHis.setStts(status);
-			
-			MqMsg mqMsg = new MqMsg(msId, "IMSI", 0, "CMD","UploadStatus");
-			mqMsg.setData(wqTmnSttsHis);
-			WqJoinMqService.addMsg(mqMsg);
-			
-			IbatisUpdateJob ibatisUpdateJob = WqJoinContext.getBean("ibatisUpdateJob", IbatisUpdateJob.class);
-			ibatisUpdateJob.addExeSql("WQ_TMN_STTS_HIS.insert", wqTmnSttsHis);
-		}else if(model.isPicture() && pic!=null){//拍照
-			pic.setTime(model.getTime());
-			pic.setMsid(msId);
-		}
-		return null;
 	}
 	
 	
