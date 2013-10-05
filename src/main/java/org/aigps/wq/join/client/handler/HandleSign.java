@@ -22,6 +22,8 @@ public class HandleSign extends IHandler{
 		log.info("接收签到信息:" + Arrays.toString(msg));
 		//通用应答回复
 		this.response(channel, msg[1], msg[0]);
+		
+		//.....
 	}
 
 	public void send(String imsi, String[] msg) {

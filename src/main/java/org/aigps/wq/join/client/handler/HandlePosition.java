@@ -23,6 +23,8 @@ public class HandlePosition extends IHandler{
 
 		//Í¨ÓÃÓ¦´ğ
 		this.response(channel, msg[1], msg[0]);
+		
+		//...
 	}
 
 	public void send(String imsi, String[] msg) {

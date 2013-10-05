@@ -17,9 +17,11 @@ public class HandleActive extends IHandler{
 		return handler;
 	}
 
+	//[cmd,water,imsi,phone]
 	public void receive(Channel channel, String[] msg) {
-		//[cmd,water,imsi,phone]
 		log.info("接收激活信息:" + Arrays.toString(msg));
+		
+		//..
 	}
 	
 	//msg: [water,ip,port]
