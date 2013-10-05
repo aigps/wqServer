@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
+
 import org.aigps.wq.dao.GpsDataDao;
 import org.aigps.wq.entity.DcCmdTrace;
 import org.aigps.wq.entity.DcRgAreaHis;
@@ -14,6 +15,7 @@ import org.aigps.wq.entity.WqStaffInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.stereotype.Component;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 /**
@@ -21,6 +23,7 @@ import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
  * @author Administrator
  *
  */
+@Component
 public class DcGpsCache{
 	private static final Log log = LogFactory.getLog(DcGpsCache.class);
 	
@@ -43,7 +46,7 @@ public class DcGpsCache{
 	/**
 	 * 员工ID与员工模型实例的对照
 	 */
-	private static Map<String, WqStaffInfo> staffMap = new ConcurrentLinkedHashMap.Builder<String,WqStaffInfo>().build();
+	private static Map<String, WqStaffInfo> staffMap = new ConcurrentLinkedHashMap.Builder<String,WqStaffInfo>().maximumWeightedCapacity(10000).build();
 	public static Map<String, WqStaffInfo> getStaffMap()throws Exception {
 		if(staffMap.size() == 0){
 			staffMap = loadStaffMap();
@@ -51,7 +54,7 @@ public class DcGpsCache{
 		return staffMap;
 	}
 	public static Map<String,WqStaffInfo> loadStaffMap()throws Exception{
-		Map<String, WqStaffInfo> tempMap = new ConcurrentLinkedHashMap.Builder<String,WqStaffInfo>().build();
+		Map<String, WqStaffInfo> tempMap = new ConcurrentLinkedHashMap.Builder<String,WqStaffInfo>().maximumWeightedCapacity(10000).build();
 		tempMap.putAll(WqJoinContext.getBean("gpsDataDao", GpsDataDao.class).loadWqStaffInfo());
 		return tempMap;
 	}
@@ -60,7 +63,7 @@ public class DcGpsCache{
 	/**
 	 * 手机序列号  与  公司职员  对照
 	 */
-	private static Map<String, String> msidStaffMap = new ConcurrentLinkedHashMap.Builder<String, String>().build();
+	private static Map<String, String> msidStaffMap = new ConcurrentLinkedHashMap.Builder<String, String>().maximumWeightedCapacity(10000).build();
 	public static Map<String, String> getMsidStaffMap()throws Exception {
 		if(msidStaffMap.size() == 0){
 			msidStaffMap = loadMsidStaffMap();
@@ -69,7 +72,7 @@ public class DcGpsCache{
 	}
 	public static Map<String, String> loadMsidStaffMap()throws Exception {
 		Map<String, WqStaffInfo> staffMap = getStaffMap();
-		Map<String,String> tempMap = new ConcurrentLinkedHashMap.Builder<String, String>().build();
+		Map<String,String> tempMap = new ConcurrentLinkedHashMap.Builder<String, String>().maximumWeightedCapacity(10000).build();
 		Iterator<String> staffIdIt = staffMap.keySet().iterator();
 		while(staffIdIt.hasNext()){
 			String staffId = staffIdIt.next();

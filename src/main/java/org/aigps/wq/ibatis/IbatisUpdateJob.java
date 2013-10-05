@@ -12,6 +12,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.lang3.concurrent.BasicThreadFactory;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -52,12 +54,12 @@ public class IbatisUpdateJob {
 	private static BasicThreadFactory tfactory = new BasicThreadFactory.Builder().namingPattern("ibatisUpdateJob-pool-%d").daemon(true).build();
 	private static ThreadPoolExecutor pool = new ThreadPoolExecutor(2,5,30,TimeUnit.SECONDS,taskQueue,tfactory,new ThreadPoolExecutor.CallerRunsPolicy());
 
-	@Autowired
-	private static SqlMapClient sqlMapClient;
+	
+	private static transient SqlMapClient sqlMapClient;
 	public static SqlMapClient getSqlMapClient() {
 		return sqlMapClient;
 	}
-	
+	@Autowired
 	public void setSqlMapClient(SqlMapClient sqlMapClient) {
 		IbatisUpdateJob.sqlMapClient = sqlMapClient;
 	}
@@ -70,53 +72,58 @@ public class IbatisUpdateJob {
 	}
 	
 	public IbatisUpdateJob() {
+		log.error(" init ibatis job!");
+	}
+	
+	@PostConstruct
+	public void init(){
 		//定时执行缓存中的SQL语句
-		JobUtil.interval(0.5, "Thread-DB-IbatisUpdateJob", new JobUtil.Callback() {
-			public void execute() throws Exception {
-				Iterator<String> sqlIt = updateSqlObjectMap.keySet().iterator();
-				//创建线程池执行每一个SQL语句的批量更新
-				while(sqlIt.hasNext()){
-					final String sql = sqlIt.next();
-					final Queue<Object> queue = updateSqlObjectMap.get(sql);
-					boolean isSQLRunning = false;
-					if(updateSqlSttsMap.containsKey(sql)){
-						isSQLRunning = updateSqlSttsMap.get(sql).get();
-					}
-					//如果有数据，并且当然SQL没有在执行，放到一个单独的线程池中去执行
-					if(queue.peek()!=null && !isSQLRunning){
-						updateSqlSttsMap.put(sql, new AtomicBoolean(true));
-						taskCounter.incrementAndGet();
-						pool.execute(new Runnable() {
-							public void run() {
-								try {
-									if(log.isTraceEnabled()){
-										log.trace("正在执行ibatisSQL更新语句:"+sql);
-									}
-									sqlMapClient.startBatch();
-									while(queue.peek()!=null){
-										Object obj = queue.poll();
-										sqlMapClient.update(sql, obj);
-									}
-									sqlMapClient.executeBatch();
-								}catch (Exception e) {
-									log.error("执行更新语句:"+sql+" 时出错!",e);
-								}finally{
-									taskCounter.decrementAndGet();
-									updateSqlSttsMap.get(sql).set(false);
-								}
+				JobUtil.interval(0.5, "Thread-DB-IbatisUpdateJob", new JobUtil.Callback() {
+					public void execute() throws Exception {
+						Iterator<String> sqlIt = updateSqlObjectMap.keySet().iterator();
+						//创建线程池执行每一个SQL语句的批量更新
+						while(sqlIt.hasNext()){
+							final String sql = sqlIt.next();
+							final Queue<Object> queue = updateSqlObjectMap.get(sql);
+							boolean isSQLRunning = false;
+							if(updateSqlSttsMap.containsKey(sql)){
+								isSQLRunning = updateSqlSttsMap.get(sql).get();
 							}
-						});
+							//如果有数据，并且当然SQL没有在执行，放到一个单独的线程池中去执行
+							if(queue.peek()!=null && !isSQLRunning){
+								updateSqlSttsMap.put(sql, new AtomicBoolean(true));
+								taskCounter.incrementAndGet();
+								pool.execute(new Runnable() {
+									public void run() {
+										try {
+											if(log.isTraceEnabled()){
+												log.trace("正在执行ibatisSQL更新语句:"+sql);
+											}
+											sqlMapClient.startBatch();
+											while(queue.peek()!=null){
+												Object obj = queue.poll();
+												sqlMapClient.update(sql, obj);
+											}
+											sqlMapClient.executeBatch();
+										}catch (Exception e) {
+											log.error("执行更新语句:"+sql+" 时出错!",e);
+										}finally{
+											taskCounter.decrementAndGet();
+											updateSqlSttsMap.get(sql).set(false);
+										}
+									}
+								});
+							}
+						}
+						//如果任务数过大，扩充线程池
+						if(taskCounter.get()/5>5){
+							pool.setMaximumPoolSize(taskCounter.get()/5);
+							if(log.isWarnEnabled()){
+								log.warn("更新任务数有:"+taskCounter.get()+"  扩充线程池个数为:"+pool.getMaximumPoolSize());
+							}
+						}
 					}
-				}
-				//如果任务数过大，扩充线程池
-				if(taskCounter.get()/5>5){
-					pool.setMaximumPoolSize(taskCounter.get()/5);
-					if(log.isWarnEnabled()){
-						log.warn("更新任务数有:"+taskCounter.get()+"  扩充线程池个数为:"+pool.getMaximumPoolSize());
-					}
-				}
-			}
-		});
+				});
 	}
 	
 }
