@@ -1,6 +1,7 @@
 package org.aigps.wq.entity;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import org.apache.commons.lang3.StringUtils;
 import org.gps.util.common.DateUtil;
@@ -31,8 +32,6 @@ public class GisPosition implements Serializable{
 	private int satlSign;
 	//定位类型0 MSA，1 Google，2 GPS，3 GPSOne，4 Hybrid，5北斗，6GPS北斗兼容模式
 	private String gpsType;
-	//触发类型 00 普通定位,01点名,02激活,03周期, 97照片,98登签,99退签
-	private String trigType;
 	//地理描述
 	private String locDesc;
 		//精度
@@ -53,6 +52,24 @@ public class GisPosition implements Serializable{
 	private transient String rptStrTime;
 	
 	
+	public GisPosition() {
+	}
+	
+	//[cmd,water,imsi,state,time,lng,lat,height,accuracy,speed,direction,provider]
+	public GisPosition(String[] msg)throws Exception{
+		this.setTmnKey(msg[2]);
+		this.setRptTime(msg[4]);
+		if("4".equals(msg[3])){//不能定位，跳出来
+			return;
+		}
+		this.setLon(Double.parseDouble(msg[5]));
+		this.setLat(Double.parseDouble(msg[6]));
+		this.setAltitude(Double.parseDouble(msg[7]));
+		this.setPrecision(Integer.parseInt(msg[8]));
+		this.setSpeed(Double.parseDouble(msg[9]));
+		this.setDire(Double.parseDouble(msg[10]));
+		this.setGpsType(msg[11]);
+	}
 	
 	
 	
@@ -152,12 +169,6 @@ public class GisPosition implements Serializable{
 	}
 	public void setGpsType(String gpsType) {
 		this.gpsType = gpsType;
-	}
-	public String getTrigType() {
-		return trigType;
-	}
-	public void setTrigType(String trigType) {
-		this.trigType = trigType;
 	}
 	public String getLocDesc() {
 		return locDesc;

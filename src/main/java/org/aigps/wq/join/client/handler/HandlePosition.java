@@ -4,6 +4,8 @@ import io.netty.channel.Channel;
 
 import java.util.Arrays;
 
+import org.aigps.wq.entity.GisPosition;
+import org.aigps.wq.service.GpsService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -19,12 +21,16 @@ public class HandlePosition extends IHandler{
 
 	//[cmd,water,imsi,state,time,lng,lat,height,accuracy,speed,direction,provider]
 	public void receive(Channel channel, String[] msg) {
-		log.info("接收定位信息:" + Arrays.toString(msg));
-
-		//通用应答
-		this.response(channel, msg[1], msg[0]);
-		
-		//...
+		try {
+			log.info("接收定位信息:" + Arrays.toString(msg));
+			//通用应答
+			this.response(channel, msg[1], msg[0]);
+			GisPosition gps = new GisPosition(msg);
+			GpsService.receiveGpsInfo(gps);
+			//...
+		} catch (Exception e) {
+			log.error(e.getMessage(),e);
+		}
 	}
 
 	public void send(String imsi, String[] msg) {

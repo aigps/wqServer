@@ -52,7 +52,7 @@ public class GpsService {
 			String tmnKey = StringUtils.isBlank(phone) ? msId : phone;
 			gps.setTmnKey(tmnKey);
 			//定位处理
-			receiveGpsInfo(tmnKey, gps);
+			receiveGpsInfo(gps);
 		}
 		
 		String staffId = DcGpsCache.getTmnSysIdMap().get(phone);
@@ -85,19 +85,19 @@ public class GpsService {
 	 * @param ymGpsModel
 	 * @throws Exception
 	 */
-	public static void receiveGpsInfo(String tmnCode,GisPosition gisPos)
+	public static void receiveGpsInfo(GisPosition gisPos)
 			throws Exception {
 		//如果存在终端与业务ID的对照,设置对照
-		if(DcGpsCache.getTmnSysIdMap().containsKey(tmnCode)){
-			gisPos.setTmnAlias(DcGpsCache.getTmnSysIdMap().get(tmnCode));
+		if(DcGpsCache.getTmnSysIdMap().containsKey(gisPos.getTmnKey())){
+			gisPos.setTmnAlias(DcGpsCache.getTmnSysIdMap().get(gisPos.getTmnKey()));
 		}
 		String sysTime = DateUtil.sysNumDateTime;
 		String nextHour = DateUtil.sysNumNextHour;
 		//最近定位
-		GisPosition preGps = DcGpsCache.getLastGps(tmnCode);
+		GisPosition preGps = DcGpsCache.getLastGps(gisPos.getTmnKey());
 		if(preGps!=null){
 			if(StringUtils.isNotBlank(preGps.getRptTime()) && preGps.getRptTime().equalsIgnoreCase(gisPos.getRptTime())){
-				log.warn(tmnCode+" 上报重复定位信息:"+gisPos.getRptTime());
+				log.warn(gisPos.getTmnKey()+" 上报重复定位信息:"+gisPos.getRptTime());
 				return;
 			}
 		}
@@ -127,12 +127,12 @@ public class GpsService {
 		//更新行政区域
 		DcGpsCache.updateDcRgAreaHis(preGps,gisPos);
 		//更新最后定位
-		DcGpsCache.updateLastGps(tmnCode, gisPos);
+		DcGpsCache.updateLastGps(gisPos.getTmnKey(), gisPos);
 		
 		//增量定位信息
 		DcGpsCache.gpsAddCache.add(gisPos);
 		
-		MqMsg mqMsg = new MqMsg(tmnCode, "WQ", 0, "GPS","RPT");
+		MqMsg mqMsg = new MqMsg(gisPos.getTmnKey(), "WQ", 0, "GPS","RPT");
 		mqMsg.setData(gisPos);
 		WqJoinMqService.addMsg(mqMsg);
 	}
