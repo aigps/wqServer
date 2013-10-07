@@ -8,6 +8,8 @@ import org.aigps.wq.util.DistrictUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.gps.map.mapabc.MapAbcUtil;
+import org.gps.map.model.MapLocation;
 import org.gps.util.common.DateUtil;
 import org.gps.util.common.LonLatUtil;
 
@@ -72,6 +74,9 @@ public class GpsService {
 				gisPos.setzCode(preGps.getzCode());
 			}
 		}
+		MapLocation offGps = MapAbcUtil.getFakeGps(new MapLocation(gisPos.getLon(),gisPos.getLat()));
+		gisPos.setLonOff(offGps.getLongtitude());
+		gisPos.setLatOff(offGps.getLatitude());
 		
 		//更新行政区域
 		DcGpsCache.updateDcRgAreaHis(preGps,gisPos);
