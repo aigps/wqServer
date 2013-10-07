@@ -10,6 +10,7 @@ import org.aigps.wq.entity.WqTmnSttsHis;
 import org.aigps.wq.ibatis.IbatisUpdateJob;
 import org.aigps.wq.mq.MqMsg;
 import org.aigps.wq.mq.WqJoinMqService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,7 +34,11 @@ public class HandleStatePhone extends IHandler{
 			String status = msg[3];
 			String rptTime = msg[4];
 			String staffId = DcGpsCache.getTmnSysIdMap().get(tmnKey);
+			if(StringUtils.isBlank(staffId)){
+				staffId = tmnKey;
+			}
 			WqTmnSttsHis wqTmnSttsHis = new WqTmnSttsHis();
+			wqTmnSttsHis.setCmd(CMD);
 			wqTmnSttsHis.setStaffId(staffId);
 			wqTmnSttsHis.setRptTime(rptTime);
 			wqTmnSttsHis.setStts(status);

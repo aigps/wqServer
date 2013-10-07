@@ -7,6 +7,8 @@ import java.util.Map;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
+import javax.annotation.PostConstruct;
+
 import org.aigps.wq.dao.GpsDataDao;
 import org.aigps.wq.entity.DcCmdTrace;
 import org.aigps.wq.entity.DcRgAreaHis;
@@ -15,6 +17,8 @@ import org.aigps.wq.entity.WqStaffInfo;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
@@ -24,10 +28,36 @@ import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
  *
  */
 @Component
+@DependsOn("gpsDataDao")
 public class DcGpsCache{
+	
+	
 	private static final Log log = LogFactory.getLog(DcGpsCache.class);
+	private static GpsDataDao gpsDataDao;
 	
 	
+	public static GpsDataDao getGpsDataDao() {
+		return gpsDataDao;
+	}
+	@Autowired
+	public  void setGpsDataDao(GpsDataDao gpsDataDao) {
+		DcGpsCache.gpsDataDao = gpsDataDao;
+	}
+	
+	private static WqConfig wqConfig;
+	
+
+
+
+
+	public static WqConfig getWqConfig() {
+		return wqConfig;
+	}
+	@Autowired
+	public  void setWqConfig(WqConfig wqConfig) {
+		DcGpsCache.wqConfig = wqConfig;
+	}
+
 	/**
 	 * 终端与业务系统的ID对照
 	 */
@@ -55,7 +85,7 @@ public class DcGpsCache{
 	}
 	public static Map<String,WqStaffInfo> loadStaffMap()throws Exception{
 		Map<String, WqStaffInfo> tempMap = new ConcurrentLinkedHashMap.Builder<String,WqStaffInfo>().maximumWeightedCapacity(10000).build();
-		tempMap.putAll(WqJoinContext.getBean("gpsDataDao", GpsDataDao.class).loadWqStaffInfo());
+		tempMap.putAll(gpsDataDao.loadWqStaffInfo());
 		return tempMap;
 	}
 	
@@ -241,8 +271,7 @@ public class DcGpsCache{
 	 * @throws Exception
 	 */
 	public static void refresh()throws Exception{
-		GpsDataDao gpsDataDao = WqJoinContext.getBean("gpsDataDao", GpsDataDao.class);
-		tmnStaffIdMap = gpsDataDao.getTmnSysIdMap(WqJoinContext.getBean("wqConfig", WqConfig.class).getTmnSysIdSql());
+		tmnStaffIdMap = gpsDataDao.getTmnSysIdMap(wqConfig.getTmnSysIdSql());
 		staffMap  = loadStaffMap();
 		msidStaffMap = loadMsidStaffMap();
 	}
@@ -251,11 +280,9 @@ public class DcGpsCache{
 	 * 初始化加载数据
 	 * @throws Exception
 	 */
+	@PostConstruct
 	public void init()throws Exception{
 		refresh();
-		
-		
-		GpsDataDao gpsDataDao = WqJoinContext.getBean("gpsDataDao", GpsDataDao.class);
 		List<GisPosition> lastGps = gpsDataDao.loadDbGps();
 		if(lastGps!=null){
 			for (GisPosition gisPosition : lastGps) {

@@ -3,8 +3,12 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.annotation.PostConstruct;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
 import com.mapinfo.dp.Feature;
 import com.mapinfo.dp.FeatureSet;
@@ -19,6 +23,7 @@ import com.mapinfo.util.DoublePoint;
  * @author Administrator
  *
  */
+@Component
 public class DistrictUtil {
 	private static FeatureLayer layer;
 	private static final Log log = LogFactory.getLog(DistrictUtil.class);
@@ -26,17 +31,32 @@ public class DistrictUtil {
 	// 只查询名称字段
 	@SuppressWarnings("deprecation")
 	private static QueryParams queryParams = new QueryParams(false, false, false, true, false, false, SearchType.entire);
+	private static String mapinfoFile;
 	
+	
+	public static String getMapinfoFile() {
+		return mapinfoFile;
+	}
+	@Value("${district.mapinfo.file}")
+	public  void setMapinfoFile(String mapinfoFile) {
+		DistrictUtil.mapinfoFile = mapinfoFile;
+	}
+
 	//初始化层
-	public DistrictUtil(String mapFile)throws Exception{
+	public DistrictUtil()throws Exception{
+		
+	}
+	
+	@PostConstruct
+	public void init()throws Exception{
 		try {
 			MapJ cityMapJ = new MapJ();
-			if (mapFile.endsWith(".gst")) {
-				File file = new File(mapFile);
+			if (mapinfoFile.endsWith(".gst")) {
+				File file = new File(mapinfoFile);
 				String mapFileDir = file.getParentFile().getAbsolutePath();
-				cityMapJ.loadGeoset(mapFile, mapFileDir, null);
+				cityMapJ.loadGeoset(mapinfoFile, mapFileDir, null);
 			} else {
-				cityMapJ.loadMapDefinition(mapFile);
+				cityMapJ.loadMapDefinition(mapinfoFile);
 			}
 			// 获得层
 			layer = (FeatureLayer) cityMapJ.getLayers().get(0);
@@ -108,7 +128,10 @@ public class DistrictUtil {
 
 	public static void main(String[] args) {
 		try {
-			new DistrictUtil("D:\\programs\\mapinfo\\district\\ChinaArea.gst");
+			DistrictUtil districtUtil = new DistrictUtil();
+			String mapfile = "D:\\programs\\mapinfo\\district\\ChinaArea.gst";
+			districtUtil.setMapinfoFile(mapfile);
+			districtUtil.init();
 			long startTime = System.currentTimeMillis();
 			String cityCode = null;
 			String cityName = null;

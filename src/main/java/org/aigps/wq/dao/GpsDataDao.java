@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
+
 import org.aigps.wq.entity.DcCmdTrace;
 import org.aigps.wq.entity.DcRgAreaHis;
 import org.aigps.wq.entity.GisPosition;
@@ -21,6 +22,8 @@ import org.gps.util.common.DateUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+
+import com.alibaba.fastjson.JSON;
 import com.ibatis.sqlmap.client.SqlMapClient;
 
 /**
@@ -157,6 +160,7 @@ public class GpsDataDao {
 				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
 					try {
 						GisPosition gisPosition = (GisPosition) iterator.next();
+						log.error(" save real -->"+JSON.toJSONString(gisPosition));
 						getSqlMapClient().insert("DC_GPS_REAL.insert", gisPosition);
 					} catch (Exception e) {
 						log.error(e.getMessage(), e);
@@ -177,18 +181,16 @@ public class GpsDataDao {
 	public  void saveGpsHis(Queue<GisPosition> queue)throws Exception{
 		if(queue!=null && !queue.isEmpty()){
 			try {
-				getSqlMapClient().startTransaction();
 				getSqlMapClient().startBatch();
 				GisPosition p = null;
 				while((p = queue.poll())!= null){
+					log.error(" save gps his ->"+JSON.toJSONString(p));
 					getSqlMapClient().insert("DC_GPS_HIS.insert", p);
 				}
 				getSqlMapClient().executeBatch();
-				getSqlMapClient().commitTransaction();
 			} catch (Exception e) {
 				log.error(e.getMessage(), e);
 			}finally{
-				getSqlMapClient().endTransaction();
 			}
 		}
 	}

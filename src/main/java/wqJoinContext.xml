@@ -66,4 +66,6 @@
 		<aop:pointcut id="ibatisDaoOperation" expression="execution(* org.aigps.wq.dao.GpsDataDao.save*(..)) or execution(* org.aigps.wq.dao.GpsDataDao.update*(..))"/>
 		<aop:advisor advice-ref="txAdvice" pointcut-ref="ibatisDaoOperation"/>
 	</aop:config>
+	
+	
 </beans>

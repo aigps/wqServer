@@ -10,6 +10,7 @@ import org.aigps.wq.entity.WqTmnSttsHis;
 import org.aigps.wq.ibatis.IbatisUpdateJob;
 import org.aigps.wq.mq.MqMsg;
 import org.aigps.wq.mq.WqJoinMqService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.gps.util.common.DateUtil;
@@ -34,13 +35,16 @@ public class HandleSign extends IHandler{
 			String status = msg[3];
 			String rptTime = msg[4];
 			String staffId = DcGpsCache.getTmnSysIdMap().get(tmnKey);
+			if(StringUtils.isBlank(staffId)){
+				staffId = tmnKey;
+			}
 			//主动签到签退，发送状态
 				
 			WqTmnSttsHis wqTmnSttsHis = new WqTmnSttsHis();
 			wqTmnSttsHis.setStaffId(staffId);
 			wqTmnSttsHis.setRptTime(rptTime);
 			wqTmnSttsHis.setStts(status);
-				
+			wqTmnSttsHis.setCmd(CMD);
 			MqMsg mqMsg = new MqMsg(tmnKey, "IMSI", 0, "CMD","UploadStatus");
 			mqMsg.setData(wqTmnSttsHis);
 			WqJoinMqService.addMsg(mqMsg);

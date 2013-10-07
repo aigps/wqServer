@@ -1,5 +1,7 @@
 package org.aigps.wq.join.client.netty;
 
+import java.util.Arrays;
+
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
@@ -14,6 +16,7 @@ import org.aigps.wq.join.client.handler.HandleStateNet;
 import org.aigps.wq.join.client.handler.HandleStatePhone;
 import org.aigps.wq.join.client.handler.IHandler;
 import org.aigps.wq.join.common.ChannelUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -32,14 +35,14 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
     	ctx.close();
     	log.error("手机客户端关闭链接");
     }
-    
+
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
     	if(!(msg instanceof String)){
     		return;
     	}
     	// [cmd,water,imsi,...]
-    	String[] items = ((String)msg).split("\\|");
+    	String[] items = StringUtils.splitPreserveAllTokens((String)msg,"|");
 		ChannelUtil.setClientChannel(items[2], ctx.channel());
 		
 		IHandler handler = getHandler(items[0]);

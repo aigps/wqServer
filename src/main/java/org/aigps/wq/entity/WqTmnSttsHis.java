@@ -29,6 +29,8 @@ public class WqTmnSttsHis implements Serializable{
     private String rptTime;
     //×´Ì¬
     private String stts;
+    //Ö¸Áî
+    private String cmd;
 
     public String getStaffId() {
         return staffId;
@@ -53,4 +55,12 @@ public class WqTmnSttsHis implements Serializable{
     public void setStts(String stts) {
         this.stts = stts;
     }
+
+	public String getCmd() {
+		return cmd;
+	}
+
+	public void setCmd(String cmd) {
+		this.cmd = cmd;
+	}
 }

@@ -19,12 +19,16 @@ import org.quartz.CronTrigger;
 import org.quartz.JobDetail;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.stereotype.Component;
 
 /**
  * 数据中心任务调度器
  * @author Administrator
  *
  */
+@Component
+@DependsOn("dcGpsCache")
 public class GpsTaskScheduler {
 	private static final Log log = LogFactory.getLog(GpsTaskScheduler.class);
 	private static Scheduler sched;

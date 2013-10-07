@@ -29,7 +29,7 @@ public class WqJoinContext {
 			context = new ClassPathXmlApplicationContext(new String[]{"wqJoinContext.xml"});
 			WqConfig wqConfig = getBean("wqConfig", WqConfig.class);
 			DcGpsCache dcGpsCache = getBean("dcGpsCache", DcGpsCache.class);
-			dcGpsCache.init();
+//			dcGpsCache.init();
 			
 			JoinServer.startup();
 			log.error("  start wq join  success!");

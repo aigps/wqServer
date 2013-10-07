@@ -14,6 +14,7 @@ import org.aigps.wq.join.client.handler.HandleStateNet;
 import org.aigps.wq.join.client.handler.HandleStatePhone;
 import org.aigps.wq.join.client.handler.IHandler;
 import org.aigps.wq.join.common.ChannelUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -39,7 +40,7 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
     		return;
     	}
     	// [cmd,imsi,...]
-    	String[] items = ((String)msg).split("\\|");
+    	String[] items = StringUtils.splitPreserveAllTokens((String)msg,"|");
 		ChannelUtil.setServerChannel(items[1], ctx.channel());
 		
 		IHandler handler = getHandler(items[0]);

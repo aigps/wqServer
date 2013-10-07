@@ -60,17 +60,17 @@ public class GisPosition implements Serializable{
 	//[cmd,water,imsi,state,time,lng,lat,height,accuracy,speed,direction,provider]
 	public GisPosition(String[] msg)throws Exception{
 		this.setTmnKey(msg[2]);
-		this.setRptTime(msg[4]);
+		this.setRptTime(DateUtil.parseToNum(msg[4]));
 		this.setState(msg[3]);
 		if("4".equals(getState())){//不能定位，跳出来
 			return;
 		}
 		this.setLon(Double.parseDouble(msg[5]));
 		this.setLat(Double.parseDouble(msg[6]));
-		this.setAltitude(Double.parseDouble(msg[7]));
-		this.setPrecision(Integer.parseInt(msg[8]));
-		this.setSpeed(Double.parseDouble(msg[9]));
-		this.setDire(Double.parseDouble(msg[10]));
+		this.setAltitude((int)Double.parseDouble(msg[7]));
+		this.setPrecision((int)Double.parseDouble(msg[8]));
+		this.setSpeed((int)Double.parseDouble(msg[9]));
+		this.setDire((int)Double.parseDouble(msg[10]));
 		this.setGpsType(msg[11]);
 	}
 	
