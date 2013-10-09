@@ -6,7 +6,11 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
+import java.util.concurrent.ConcurrentLinkedQueue;
+
+import javax.annotation.PostConstruct;
 
 import org.aigps.wq.entity.GisPosition;
 import org.aigps.wq.entity.WqAlarmInfo;
@@ -27,7 +31,7 @@ import com.googlecode.concurrentlinkedhashmap.ConcurrentLinkedHashMap;
 public class RuleCache implements ApplicationContextAware{
 	private static final Log log = LogFactory.getLog(RuleCache.class);
 	
-	private static ApplicationContext context;
+	public static ApplicationContext context;
 	
 	/**
 	 * 区域集合
@@ -151,8 +155,13 @@ public class RuleCache implements ApplicationContextAware{
 		}
 		return retList;
 	}
+	
+	
+	
+	
 	//新进入的区域集合
-	public static List<WqRegionVisit> newInRegionList = new ArrayList<WqRegionVisit>();
+	public static Queue<WqRegionVisit> newInRegionQueue = new ConcurrentLinkedQueue<WqRegionVisit>();
+	private static Queue<WqRegionVisit> swapInRegionQueue = new ConcurrentLinkedQueue<WqRegionVisit>();
 	
 	/**
 	 * 增加新进入的区域
@@ -168,7 +177,7 @@ public class RuleCache implements ApplicationContextAware{
 			regionVisitMap.put(wqRegionVisit.getRegionId(), wqRegionVisit);
 			staffVisitRegionMap.put(wqRegionVisit.getStaffId(), regionVisitMap);
 		}
-		newInRegionList.add(wqRegionVisit);
+		newInRegionQueue.add(wqRegionVisit);
 	}
 	/**
 	 * 取到当前新进入的区域，确保每个人每个区域只有一条记录
@@ -177,15 +186,17 @@ public class RuleCache implements ApplicationContextAware{
 	 */
 	public static List<WqRegionVisit> getNewInRegionAndRemove()throws Exception{
 		List<WqRegionVisit> list = new ArrayList<WqRegionVisit>();
-		List<WqRegionVisit> newInList = RuleCache.newInRegionList;
-		RuleCache.newInRegionList = new ArrayList<WqRegionVisit>(1000);
+		Queue<WqRegionVisit> newInQueue = RuleCache.newInRegionQueue;
+		RuleCache.newInRegionQueue = swapInRegionQueue;
+		swapInRegionQueue = newInQueue;
 		HashMap<String,WqRegionVisit> newMap = new HashMap<String,WqRegionVisit>();
-		for (Iterator iterator = newInList.iterator(); iterator.hasNext();) {
-			WqRegionVisit wqRegionVisit = (WqRegionVisit) iterator.next();
+		while(swapInRegionQueue.peek() != null) {
+			WqRegionVisit wqRegionVisit = swapInRegionQueue.poll();
 			if(wqRegionVisit.getLeaveTime()==null || wqRegionVisit.getLeaveTime().trim().equals("")){
 				newMap.put(wqRegionVisit.getStaffId()+wqRegionVisit.getRegionId(), wqRegionVisit);
 			}
 		}
+		
 		Iterator<String> newInIt = newMap.keySet().iterator();
 		while(newInIt.hasNext()){
 			String key = newInIt.next();
@@ -195,7 +206,8 @@ public class RuleCache implements ApplicationContextAware{
 		return list;
 	}
 	
-	public static List<WqRegionVisit> newOutRegionList = new ArrayList<WqRegionVisit>();
+	public static Queue<WqRegionVisit> newOutRegionQueue = new ConcurrentLinkedQueue<WqRegionVisit>();
+	
 	/**
 	 * 增加新的离开区域
 	 * @param wqRegionVisit
@@ -206,7 +218,7 @@ public class RuleCache implements ApplicationContextAware{
 			HashMap<String, WqRegionVisit> regionVisitMap = staffVisitRegionMap.get(wqRegionVisit.getStaffId());
 			regionVisitMap.remove(wqRegionVisit.getRegionId());
 		}
-		newOutRegionList.add(wqRegionVisit);
+		newOutRegionQueue.add(wqRegionVisit);
 	}
 	
 	/**
@@ -390,9 +402,18 @@ public class RuleCache implements ApplicationContextAware{
 	 * 初始化规则数据
 	 * @throws Exception
 	 */
+	@PostConstruct
 	public void init()throws Exception{
+		
+		refresh();
+	}
+	
+	public void refresh() throws Exception {
 		regionMap = loadRegionMap();
 		staffRegionMap = loadStaffRegionMap();
+		ruleMap = loadRuleMap();
+		staffRuleMap = loadStaffRuleMap();
+		staffVisitRegionMap = loadStaffVisitRegionMap();
 	}
 	
 	

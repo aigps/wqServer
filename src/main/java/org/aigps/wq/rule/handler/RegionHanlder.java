@@ -20,12 +20,12 @@ public class RegionHanlder {
 	private static final Log log = LogFactory.getLog(RegionHanlder.class);
 	
 	public static void handle(String staffId, String companyId,
-			GisPosition ymGpsModel,MapLocation mapPoint) throws Exception {
+			GisPosition gis,MapLocation mapPoint) throws Exception {
 		GisPosition preGps = RuleCache.getLastGps(staffId);
-		if(preGps!=null && preGps.getRptTime().substring(0, 8).compareTo(ymGpsModel.getRptTime().substring(0, 8))<0){
+		if(preGps!=null && preGps.getRptTime().substring(0, 8).compareTo(gis.getRptTime().substring(0, 8))<0){
 			RuleCache.removeOverDayVisit(preGps);
 		}
-		RuleCache.refreshLastGps(ymGpsModel);
+		RuleCache.refreshLastGps(gis);
 		/**
 		 * 遍历所有当前与终端绑定，生效的区域
 		 */
@@ -61,19 +61,19 @@ public class RegionHanlder {
 						WqRegionVisit wqRegionVisit = new WqRegionVisit();
 						wqRegionVisit.setStaffId(staffId);
 						wqRegionVisit.setRegionId(regionId);
-						wqRegionVisit.setEnterTime(ymGpsModel.getRptStrTime());
+						wqRegionVisit.setEnterTime(gis.getRptStrTime());
 						//增加所属公司
 						wqRegionVisit.setCompanyId(companyId);
 						RuleCache.addNewInRegion(wqRegionVisit);
 					}else{//如果之前也在区域内
 						WqRegionVisit wqRegionVisit = RuleCache.getAlreadyInRegion(staffId, regionId);
 						//但是时间比前一次的进入的时间还在前面，那么，可能是补报或者重新生成GPS定位，忽略
-						if(wqRegionVisit.getEnterTime().compareTo(ymGpsModel.getRptStrTime())>0){//如果
+						if(wqRegionVisit.getEnterTime().compareTo(gis.getRptStrTime())>0){//如果
 							RuleCache.removeTrackBackGpsRegion(staffId, regionId);
 							wqRegionVisit = new WqRegionVisit();
 							wqRegionVisit.setStaffId(staffId);
 							wqRegionVisit.setRegionId(regionId);
-							wqRegionVisit.setEnterTime(ymGpsModel.getRptStrTime());
+							wqRegionVisit.setEnterTime(gis.getRptStrTime());
 							//增加所属公司
 							wqRegionVisit.setCompanyId(companyId);
 							RuleCache.addNewInRegion(wqRegionVisit);
@@ -84,8 +84,8 @@ public class RegionHanlder {
 						//离开区域
 						WqRegionVisit wqRegionVisit = RuleCache.getAlreadyInRegion(staffId, regionId);
 						//开始时间必须小于结束时间
-						if(wqRegionVisit!=null && wqRegionVisit.getEnterTime().compareTo(ymGpsModel.getRptStrTime())<0){
-							wqRegionVisit.setLeaveTime(ymGpsModel.getRptStrTime());
+						if(wqRegionVisit!=null && wqRegionVisit.getEnterTime().compareTo(gis.getRptStrTime())<0){
+							wqRegionVisit.setLeaveTime(gis.getRptStrTime());
 							wqRegionVisit.setStayLong(BigDecimal.valueOf(DateUtil.getBetweenTime(wqRegionVisit.getEnterTime(),wqRegionVisit.getLeaveTime(), DateUtil.YMD_HMS)/1000));
 							RuleCache.addNewOutRegion(wqRegionVisit);
 						}else{//
@@ -104,8 +104,8 @@ public class RegionHanlder {
 					.hasNext();) {
 				String inValidRegionId = (String) iterator.next();
 				WqRegionVisit wqRegionVisit = RuleCache.getAlreadyInRegion(staffId, inValidRegionId);
-				if(wqRegionVisit.getEnterTime().compareTo(ymGpsModel.getRptStrTime())<0){
-					wqRegionVisit.setLeaveTime(ymGpsModel.getRptStrTime());
+				if(wqRegionVisit.getEnterTime().compareTo(gis.getRptStrTime())<0){
+					wqRegionVisit.setLeaveTime(gis.getRptStrTime());
 				}else{
 					wqRegionVisit.setLeaveTime(DateUtil.sysDateTime);
 				}

@@ -1,9 +1,11 @@
 package org.aigps.wq.rule;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import org.aigps.wq.entity.WqAlarmInfo;
@@ -137,6 +139,74 @@ public class RuleDao {
 			}
 		}
 		return staffVisitRegionMap;
+	}
+	
+	
+	/**
+	 * 删除已经离开的区域
+	 * @param queue
+	 * @throws Exception
+	 */
+	public  void delWqRegionVisit(Collection<WqRegionVisit> queue)throws Exception{
+		if(queue!=null && !queue.isEmpty()){
+			getSqlMapClient().startBatch();
+			for (WqRegionVisit wqRegionVisit : queue) {
+				getSqlMapClient().delete("WQ_REGION_VISIT.deleteByPrimaryKey", wqRegionVisit);
+			}
+			getSqlMapClient().executeBatch();
+		}
+	}
+	
+	/**
+	 * 保存进出区域历史
+	 * @param list
+	 * @throws Exception
+	 */
+	public void saveWqRegionVisitHis(Queue<WqRegionVisit> queue)throws Exception{
+		if(queue!=null && !queue.isEmpty()){
+			getSqlMapClient().startBatch();
+			while(queue.peek() != null){
+				WqRegionVisit wqRegionVisit = queue.poll();
+				getSqlMapClient().insert("WQ_REGION_VISIT_HIS.insert", wqRegionVisit);
+			}
+			getSqlMapClient().executeBatch();
+		}
+	}
+	
+	/**
+	 * 保存刚进入的区域
+	 * @param list
+	 * @throws Exception
+	 */
+	public void saveWqRegionVisit(List<WqRegionVisit> list)throws Exception{
+		if(list!=null && list.size()>0){
+			getSqlMapClient().startBatch();
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				WqRegionVisit wqRegionVisit = (WqRegionVisit) iterator.next();
+				if(wqRegionVisit.getLeaveTime()==null || wqRegionVisit.getLeaveTime().trim().equals("")){
+					getSqlMapClient().insert("WQ_REGION_VISIT.insert", wqRegionVisit);
+				}
+			}
+			getSqlMapClient().executeBatch();
+		}
+	}
+	
+	
+	
+	/**
+	 * 保存历史报警
+	 * @param list
+	 * @throws Exception
+	 */
+	public void saveWqAlarmInfo(List<WqAlarmInfo> list)throws Exception{
+		if(list!=null && list.size()>0){
+			getSqlMapClient().startBatch();
+			for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+				WqAlarmInfo wqAlarmInfo = (WqAlarmInfo) iterator.next();
+				getSqlMapClient().insert("WQ_ALARM_INFO.insert", wqAlarmInfo);
+			}
+			getSqlMapClient().executeBatch();
+		}
 	}
 	
 
