@@ -61,6 +61,8 @@ public class RuleCache implements ApplicationContextAware{
 		}
 		return staffRegionMap;
 	}
+	
+	
 	public static Map<String,Set<String>> loadStaffRegionMap()throws Exception{
 		Map<String, Set<String>> tempMap = new ConcurrentLinkedHashMap.Builder<String, Set<String>>().maximumWeightedCapacity(10000).build();
 		RuleDao ruleDao = context.getBean("ruleDao", RuleDao.class); 

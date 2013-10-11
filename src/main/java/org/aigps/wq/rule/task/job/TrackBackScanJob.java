@@ -24,24 +24,24 @@ public class TrackBackScanJob implements Job {
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
 			if(!isRunning){
-				isRunning = true;
-				WqDataDao.updateTrackBackState(WqRetrospect.STATE_NO_RUNNING, WqRetrospect.STATE_GET);
-				List<WqRetrospect> list = WqDataDao.getTrackBackState(WqRetrospect.STATE_GET);
-				if(list!=null && list.size()>0){
-					WqDataCache.setRegionMap(WqDataDao.getWqMapRegion());
-				}
-				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
-					final WqRetrospect wqRetrospect = (WqRetrospect) iterator.next();
-					pool.execute(new Runnable(){
-						public void run() {
-							try {
-								WqTraceBackHandler.trackBack(wqRetrospect);
-							} catch (Exception e) {
-								log.error(e.getMessage(), e);
-							}
-						}
-					});
-				}
+//				isRunning = true;
+//				WqDataDao.updateTrackBackState(WqRetrospect.STATE_NO_RUNNING, WqRetrospect.STATE_GET);
+//				List<WqRetrospect> list = WqDataDao.getTrackBackState(WqRetrospect.STATE_GET);
+//				if(list!=null && list.size()>0){
+//					WqDataCache.setRegionMap(WqDataDao.getWqMapRegion());
+//				}
+//				for (Iterator iterator = list.iterator(); iterator.hasNext();) {
+//					final WqRetrospect wqRetrospect = (WqRetrospect) iterator.next();
+//					pool.execute(new Runnable(){
+//						public void run() {
+//							try {
+//								WqTraceBackHandler.trackBack(wqRetrospect);
+//							} catch (Exception e) {
+//								log.error(e.getMessage(), e);
+//							}
+//						}
+//					});
+//				}
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

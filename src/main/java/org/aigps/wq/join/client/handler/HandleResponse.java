@@ -5,7 +5,7 @@ import io.netty.channel.Channel;
 import java.util.Arrays;
 
 import org.aigps.wq.mq.MqMsg;
-import org.aigps.wq.mq.WqJoinMqService;
+import org.aigps.wq.mq.WqMqProducer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,7 +28,7 @@ public class HandleResponse extends IHandler{
 		try {
 			MqMsg mqMsg = new MqMsg(tmnKey, "IMSI", 0, "CMD_RSP",rspCmd);
 			mqMsg.addDataProperty("respResult", "0");
-			WqJoinMqService.addMsg(mqMsg);
+			WqMqProducer.addMsg(mqMsg);
 			//...
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

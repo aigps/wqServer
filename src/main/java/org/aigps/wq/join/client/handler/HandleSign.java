@@ -9,7 +9,7 @@ import org.aigps.wq.WqJoinContext;
 import org.aigps.wq.entity.WqTmnSttsHis;
 import org.aigps.wq.ibatis.IbatisUpdateJob;
 import org.aigps.wq.mq.MqMsg;
-import org.aigps.wq.mq.WqJoinMqService;
+import org.aigps.wq.mq.WqMqProducer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -47,7 +47,7 @@ public class HandleSign extends IHandler{
 			wqTmnSttsHis.setCmd(CMD);
 			MqMsg mqMsg = new MqMsg(tmnKey, "IMSI", 0, "CMD","UploadStatus");
 			mqMsg.setData(wqTmnSttsHis);
-			WqJoinMqService.addMsg(mqMsg);
+			WqMqProducer.addMsg(mqMsg);
 			
 			IbatisUpdateJob ibatisUpdateJob = WqJoinContext.getBean("ibatisUpdateJob", IbatisUpdateJob.class);
 			ibatisUpdateJob.addExeSql("WQ_TMN_STTS_HIS.insert", wqTmnSttsHis);

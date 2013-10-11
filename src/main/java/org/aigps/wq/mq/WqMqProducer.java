@@ -35,8 +35,8 @@ import com.alibaba.fastjson.JSON;
  */
 @Component
 @DependsOn("vmMqFactory")
-public class WqJoinMqService {
-	private static final Log log = LogFactory.getLog(WqJoinMqService.class);
+public class WqMqProducer {
+	private static final Log log = LogFactory.getLog(WqMqProducer.class);
     private static transient Connection connection;
     private static transient Session session;
     private static transient MessageProducer producer;
@@ -54,7 +54,7 @@ public class WqJoinMqService {
     /**
 	 * 
 	 */
-	public WqJoinMqService()throws Exception {
+	public WqMqProducer()throws Exception {
     	connection = VmMqFactory.getFactory().createConnection();
         connection.start();
         session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
@@ -111,7 +111,7 @@ public class WqJoinMqService {
 			VmMqFactory factory = new VmMqFactory();
 			factory.setUrl("tcp://127.0.0.1:12300");
 			factory.init();
-			WqJoinMqService canMsgMqService = new WqJoinMqService();
+			WqMqProducer canMsgMqService = new WqMqProducer();
 			while(true){
 				Thread.sleep(100);
 			}
