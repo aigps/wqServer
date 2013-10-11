@@ -26,6 +26,9 @@ public class MqMsg implements Serializable{
 	//Êý¾ÝÄÚÈÝ
 	private Object data;
 	
+	public MqMsg() {
+	}
+	
 	public MqMsg(String tmnId,String tmnType,long msgSeq,List<String> cmdList) {
 		this.tmnId = tmnId;
 		this.tmnType = tmnType;

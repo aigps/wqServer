@@ -7,12 +7,9 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import org.aigps.wq.entity.WqRetrospect;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.gps.model.wq.WqRetrospect;
-import org.gps.wq.WqDataCache;
-import org.gps.wq.dao.WqDataDao;
-import org.gps.wq.handler.WqTraceBackHandler;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -20,11 +17,10 @@ import org.quartz.JobExecutionException;
 public class TrackBackScanJob implements Job {
 	private static final Log log = LogFactory.getLog(TrackBackScanJob.class);
 	private static boolean isRunning = false;//同一个时间点，只允许一个job跑数
-	public static final String ID="TrackBackScanJob";
+	public  static final String ID="TrackBackScanJob";
 	private static BlockingQueue taskQueue = new ArrayBlockingQueue(2000);
 	private static ThreadPoolExecutor pool = new ThreadPoolExecutor(10,20,30,TimeUnit.SECONDS,taskQueue,new ThreadPoolExecutor.CallerRunsPolicy());
 
-	@Override
 	public void execute(JobExecutionContext context) throws JobExecutionException {
 		try {
 			if(!isRunning){
@@ -52,7 +48,6 @@ public class TrackBackScanJob implements Job {
 		}finally{
 			isRunning = false;
 		}
-		
 	}
 
 }
