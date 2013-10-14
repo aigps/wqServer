@@ -9,7 +9,7 @@ import org.aigps.wq.WqJoinContext;
 import org.aigps.wq.entity.WqTmnSttsHis;
 import org.aigps.wq.ibatis.IbatisUpdateJob;
 import org.aigps.wq.mq.MqMsg;
-import org.aigps.wq.mq.WqMqProducer;
+import org.aigps.wq.mq.server.WqMqServer;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -45,7 +45,7 @@ public class HandleStatePhone extends IHandler{
 			
 			MqMsg mqMsg = new MqMsg(tmnKey, "IMSI", 0, "CMD","UploadStatus");
 			mqMsg.setData(wqTmnSttsHis);
-			WqMqProducer.addMsg(mqMsg);
+			WqMqServer.addMsg(mqMsg);
 			
 			IbatisUpdateJob ibatisUpdateJob = WqJoinContext.getBean("ibatisUpdateJob", IbatisUpdateJob.class);
 			ibatisUpdateJob.addExeSql("WQ_TMN_STTS_HIS.insert", wqTmnSttsHis);

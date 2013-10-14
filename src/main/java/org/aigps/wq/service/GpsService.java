@@ -3,7 +3,7 @@ package org.aigps.wq.service;
 import org.aigps.wq.DcGpsCache;
 import org.aigps.wq.entity.GisPosition;
 import org.aigps.wq.mq.MqMsg;
-import org.aigps.wq.mq.WqMqProducer;
+import org.aigps.wq.mq.server.WqMqServer;
 import org.aigps.wq.util.DistrictUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
@@ -88,6 +88,6 @@ public class GpsService {
 		
 		MqMsg mqMsg = new MqMsg(gisPos.getTmnKey(), "WQ", 0, "GPS","RPT");
 		mqMsg.setData(gisPos);
-		WqMqProducer.addMsg(mqMsg);
+		WqMqServer.addMsg(mqMsg);
 	}
 }

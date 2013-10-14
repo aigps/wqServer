@@ -1,4 +1,4 @@
-package org.aigps.wq.mq;
+package org.aigps.wq.mq.server;
 
 import javax.annotation.PostConstruct;
 import javax.jms.ConnectionFactory;
