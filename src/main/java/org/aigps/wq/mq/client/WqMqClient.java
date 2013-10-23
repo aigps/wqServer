@@ -3,7 +3,9 @@ package org.aigps.wq.mq.client;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
@@ -53,8 +55,15 @@ public abstract class WqMqClient implements MessageListener{
     private  AtomicLong prepareSendCounter = new AtomicLong();
     //已经发送消息计算数
     private  AtomicLong sendCounter = new AtomicLong(); 
+    //发送消息的任务触发器
+    private ScheduledExecutorService sendScheJob ;
     
-    private ScheduledExecutorService scheJob ;
+    //接收消息的工作池
+    private ThreadPoolExecutor workPool = new ThreadPoolExecutor(10, 10, 30, TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+    private ScheduledExecutorService recScheJob;
+    //待处理的任务计数器
+    private AtomicLong poolTaskCounter = new AtomicLong();
+    
     
 	public void start()throws Exception{
 		if(StringUtils.isBlank(brokerUrl)){
@@ -79,8 +88,8 @@ public abstract class WqMqClient implements MessageListener{
         
         
         //创建发送消息任务
-        scheJob = Executors.newSingleThreadScheduledExecutor();
-        scheJob.scheduleAtFixedRate(new Runnable() {
+        sendScheJob = Executors.newSingleThreadScheduledExecutor();
+        sendScheJob.scheduleAtFixedRate(new Runnable() {
 			public void run() {
 				try {
 					if(prepareSendCounter.get()-sendCounter.get()>10000){
@@ -97,6 +106,29 @@ public abstract class WqMqClient implements MessageListener{
 				}
 			}
 		}, 0, 20, TimeUnit.MILLISECONDS);
+        
+        //创建接收消息的监控器
+        recScheJob = Executors.newSingleThreadScheduledExecutor();
+        recScheJob.scheduleAtFixedRate(new Runnable() {
+			public void run() {
+				try {
+					if(workPool == null){
+						return;
+					}
+					long notRunTask = poolTaskCounter.get();
+					if(notRunTask >10000){
+						log.error("大量消息堆积，未能及时处理，请关注！！！待处理消息数-->"+notRunTask);
+					}
+					if(notRunTask >50000){
+						log.error("----------清理未处理的消息！！！");
+						workPool.getQueue().clear();
+						poolTaskCounter.set(0);
+					}
+				} catch (Throwable e) {
+					log.error(e.getMessage(),e);
+				}
+			}
+		}, 10, 5, TimeUnit.SECONDS);
 	}
 	
 	/**
@@ -107,8 +139,8 @@ public abstract class WqMqClient implements MessageListener{
         if (connection != null) {
             connection.close();
         }
-        if(scheJob != null){
-        	scheJob.shutdown();
+        if(sendScheJob != null){
+        	sendScheJob.shutdown();
         }
 	} 
 	
@@ -154,12 +186,27 @@ public abstract class WqMqClient implements MessageListener{
 			if(message instanceof TextMessage){
 				TextMessage textMsg = (TextMessage)message;
 				String jsonStr = textMsg.getText();
-				MqMsg mqMsg = JSON.parseObject(jsonStr, MqMsg.class);
-				OnMqMsq(mqMsg);
+				final MqMsg mqMsg = JSON.parseObject(jsonStr, MqMsg.class);
+				poolTaskCounter.incrementAndGet();
+				workPool.execute(new Runnable() {
+					public void run() {
+						OnMqMsq(mqMsg);
+						poolTaskCounter.decrementAndGet();
+					}
+				});
+				
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);
 		}
 	}
 
+	public String getBrokerUrl() {
+		return brokerUrl;
+	}
+
+	public void setBrokerUrl(String brokerUrl) {
+		this.brokerUrl = brokerUrl;
+	}
+	
 }

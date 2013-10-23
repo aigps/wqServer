@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.alibaba.fastjson.JSON;
+
 public class MqMsg implements Serializable{
 	
 	/**
@@ -55,6 +57,10 @@ public class MqMsg implements Serializable{
 		}else{
 			throw new Exception("data is not map,can't put key value!!!");
 		}
+	}
+	
+	public <T>T getData(Class<T> clazz){
+		return JSON.parseObject(data.toString(), clazz);
 	}
 	
 

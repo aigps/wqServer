@@ -1,6 +1,9 @@
 package org.aigps.wq.mq.server;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Queue;
+import java.util.Set;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -16,14 +19,17 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import org.aigps.wq.entity.GisPosition;
+import org.aigps.wq.mq.MqCmdC;
 import org.aigps.wq.mq.MqMsg;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.junit.internal.runners.TestMethod;
+import org.gps.util.common.DateUtil;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.stereotype.Component;
 
 import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 
 /**
  * @Title：can历史数据消息转发
@@ -128,11 +134,24 @@ public class WqMqServer implements MessageListener{
 	public static void main(String[] args) {
 		try {
 			VmMqFactory factory = new VmMqFactory();
-			factory.setUrl("tcp://127.0.0.1:12300");
+			factory.setUrl("nio://192.168.1.88:12300");
 			factory.init();
-			WqMqServer canMsgMqService = new WqMqServer();
+			WqMqServer mqServer = new WqMqServer();
+			long seq = 0;
 			while(true){
-				Thread.sleep(100);
+				MqMsg mqMsg = new MqMsg("tmnID","SL",seq++,MqCmdC.MSG_GPS,MqCmdC.GPS_RPT);
+				GisPosition gis = new GisPosition();
+				gis.setTmnKey("tmnKey");
+				gis.setAltitude(0);
+				gis.setLat(30);
+				gis.setLon(120);
+				gis.setDire(90);
+				gis.setPrecision(10);
+				gis.setRptTime(DateUtil.getSystemFormatTime(DateUtil.sysNumDateTime));
+				mqMsg.setData(gis);
+				mqServer.addMsg(mqMsg);
+				
+				Thread.sleep(1000);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -147,6 +166,20 @@ public class WqMqServer implements MessageListener{
 				TextMessage textMsg = (TextMessage)message;
 				String jsonStr = textMsg.getText();
 				MqMsg mqMsg = JSON.parseObject(jsonStr, MqMsg.class);
+				log.error("server receive cmd msg -->"+JSON.toJSONString(mqMsg));
+				List<String> cmdList = mqMsg.getCmdList();
+				if(MqCmdC.MSG_SYN.equals(cmdList.get(0))){//数据同步
+					if(cmdList.size() == 1){
+						return;
+					}
+					if(MqCmdC.SYN_STAFF_RULES.equals(cmdList.get(1))){//员工规则
+						//
+						
+					}else if(MqCmdC.SYN_STAFF_REGIONS.equals(cmdList.get(1))){//员工区域
+						//
+						Map<String, Set<String>> map = JSON.parseObject(mqMsg.getData().toString(), new TypeReference<Map<String,Set<String>>>(){}, null);
+					}
+				}
 			}
 		} catch (Exception e) {
 			log.error(e.getMessage(),e);

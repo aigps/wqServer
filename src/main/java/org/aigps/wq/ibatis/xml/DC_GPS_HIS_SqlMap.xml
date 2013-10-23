@@ -3,7 +3,7 @@
 <sqlMap namespace="DC_GPS_HIS" >
   <resultMap id="ibatorgenerated_BaseResultMap" class="org.aigps.wq.entity.GisPosition" >
     <result column="TMN_CODE" property="tmnKey" jdbcType="VARCHAR" />
-    <result column="TMN_ALIAS" property="tmnAlias" jdbcType="VARCHAR" />
+    <!-- <result column="TMN_ALIAS" property="tmnAlias" jdbcType="VARCHAR" /> -->
     <result column="REPORT_TIME" property="rptTime" jdbcType="DECIMAL" />
     <result column="LOGIT" property="lon" jdbcType="DECIMAL" />
     <result column="LAT" property="lat" jdbcType="DECIMAL" />
@@ -32,8 +32,7 @@
   
   <select id="queryStaffHis" resultMap="ibatorgenerated_BaseResultMap" parameterClass="org.aigps.wq.entity.GisPosition" >
     select * from DC_GPS_HIS
-    where TMN_ALIAS = #tmnAlias:VARCHAR# and 
-    REPORT_TIME <![CDATA[>=]]> #queryStartTime:VARCHAR# and  REPORT_TIME  <![CDATA[<]]>#queryEndTime:VARCHAR# 
+    where REPORT_TIME <![CDATA[>=]]> #queryStartTime:VARCHAR# and  REPORT_TIME  <![CDATA[<]]>#queryEndTime:VARCHAR# 
     order by REPORT_TIME ASC
   </select>
   <delete id="deleteByPrimaryKey" parameterClass="org.aigps.wq.entity.GisPosition" >
@@ -41,10 +40,10 @@
     where TMN_CODE = #tmnKey:VARCHAR#
   </delete>
   <insert id="insert" parameterClass="org.aigps.wq.entity.GisPosition" >
-    insert into DC_GPS_HIS (TMN_CODE, TMN_ALIAS, REPORT_TIME, LOGIT, LAT,
+    insert into DC_GPS_HIS (TMN_CODE,REPORT_TIME, LOGIT, LAT,
       SPEED, ANGLE, HEIGHT,GSM_SIGN, GPS_SATL,STATE,
       LOC_DESC, ZCODE, GPS_TYPE,PRECISION, LOGIT_OFFSET, LAT_OFFSET)
-    values (#tmnKey:VARCHAR#, #tmnAlias:VARCHAR#, #rptTime:DECIMAL#, #lon:DECIMAL#,
+    values (#tmnKey:VARCHAR#, #rptTime:DECIMAL#, #lon:DECIMAL#,
       #lat:DECIMAL#, #speed:VARCHAR#, #dire:VARCHAR#,
       #altitude:VARCHAR#,  #gsmSign:VARCHAR#, #satlSign:VARCHAR#, #state:VARCHAR#,
        #locDesc:VARCHAR#, #zCode:VARCHAR#,
